@@ -225,7 +225,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Base
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8619873911026553381, guid: 11f25e6553fa3aa47af7730c5d58e17e,
+        type: 3}
+      propertyPath: m_GravityScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8619873911026553381, guid: 11f25e6553fa3aa47af7730c5d58e17e,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 7
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8619873911026553381, guid: 11f25e6553fa3aa47af7730c5d58e17e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 11f25e6553fa3aa47af7730c5d58e17e, type: 3}
 --- !u!1 &282904424
 GameObject:

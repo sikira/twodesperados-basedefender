@@ -77,7 +77,6 @@ public class LevelInitalizer : MonoBehaviour
         // foreach (var pos in spawnerPosition)
         //     EnemyTileMap.SetTile(pos, SpawnerTileMap);
 
-
     }
 
     private void InitalizePlayerAndBase()
@@ -96,8 +95,8 @@ public class LevelInitalizer : MonoBehaviour
         while (basePosition == playerStartPosition)
             basePosition = getRandomVector3();
 
-        playerBase.GetComponent<Rigidbody2D>().MovePosition(new Vector2(basePosition.x, basePosition.y));
-        // playerBase.transform.position = basePosition;
+        // playerBase.GetComponent<Rigidbody2D>().MovePosition(new Vector2(basePosition.x, basePosition.y));
+        playerBase.transform.position = basePosition;
 
     }
 
@@ -107,7 +106,7 @@ public class LevelInitalizer : MonoBehaviour
             for (int j = 0; j < levelData.SizeY; j++)
             {
                 if (i == 0 || j == 0 || i == levelData.SizeX - 1 || j == levelData.SizeY - 1)
-                    FloorTileMap.SetTile(new Vector3Int(i, j, 0), ObstacleSample1);
+                    ObstacleTileMap.SetTile(new Vector3Int(i, j, 0), ObstacleSample1);
                 else
                 {
                     if (i == 1 || j == 1 || i == levelData.SizeX - 2 || j == levelData.SizeY - 2)
