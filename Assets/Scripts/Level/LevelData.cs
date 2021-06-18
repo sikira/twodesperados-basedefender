@@ -12,6 +12,8 @@ public class LevelData
     private int sizeX = 25;
     private int sizeY = 20;
 
+    public int NumberOfEnemySpawner = 4;
+
     public int SizeX
     {
         get => sizeX;
