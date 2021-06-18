@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelData : MonoBehaviour
+public class LevelData
 {
     private const int minSizeX = 6;
     private const int minSizeY = 6;

@@ -20,7 +20,6 @@ public class LevelInitalizer : MonoBehaviour
     private void InitalizeTiles()
     {
         InitlaizeFloorAndBoundries();
-
     }
 
     private void InitlaizeFloorAndBoundries()
@@ -28,8 +27,18 @@ public class LevelInitalizer : MonoBehaviour
         for (int i = 0; i < levelData.SizeX; i++)
             for (int j = 0; j < levelData.SizeY; j++)
             {
-                FloorTileMap.SetTile(new Vector3Int(i, j, 0), FloorTileSample1);
+                if (i == 0 || j == 0 || i == levelData.SizeX - 1 || j == levelData.SizeY - 1)
+                {
+                    FloorTileMap.SetTile(new Vector3Int(i, j, 0), ObstacleSample1);
+                }
+                else
+                {
+                    FloorTileMap.SetTile(new Vector3Int(i, j, 0), FloorTileSample1);
+                }
+
             }
+
+
 
     }
 }
