@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class MainPlayer : MonoBehaviour
 {
-    private PlayersControls controls;
+    private MovementControls controls;
     private float horizontalMove = 0;
     private float verticalMove = 0;
     public float speed = 22;
 
     void Start()
     {
-        controls = this.GetComponent<PlayersControls>();
+        controls = this.GetComponent<MovementControls>();
 
 
     }
@@ -19,7 +19,6 @@ public class MainPlayer : MonoBehaviour
     {
         horizontalMove = Input.GetAxis("Horizontal") * speed;
         verticalMove = Input.GetAxis("Vertical") * speed;
-
 
     }
     void FixedUpdate()

@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private MovementControls controls;
     void Start()
     {
-        
+        controls = this.gameObject.GetComponent<MovementControls>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        controls.Move(1 * Time.deltaTime, 2 * Time.deltaTime);
+
     }
 }

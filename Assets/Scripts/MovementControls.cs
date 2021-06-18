@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayersControls : MonoBehaviour
+public class MovementControls : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Vector3 velocity = Vector3.zero;
