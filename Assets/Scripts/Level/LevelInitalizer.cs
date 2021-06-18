@@ -14,6 +14,8 @@ public class LevelInitalizer : MonoBehaviour
     public TileBase FloorTileSample1;
     public TileBase ObstacleSample1;
     public TileBase PlayerSample1;
+    public TileBase BaseTileMap;
+    public TileBase SpawnerTileMap;
 
     void Awake()
     {
@@ -24,21 +26,34 @@ public class LevelInitalizer : MonoBehaviour
     private void InitalizeTiles()
     {
         InitlaizeFloorAndBoundries();
-        InitalizePlayer();
+        InitalizePlayerAndBase();
+        InitalizeEnemySpawner();
     }
 
-    private void InitalizePlayer()
+    private void InitalizeEnemySpawner()
+    {
+        
+
+        
+    }
+
+    private void InitalizePlayerAndBase()
     {
         var baseArea = levelData.BaseArea;
-        var playerStartPosition = new Vector3Int(
-            UnityEngine.Random.Range(baseArea.x, baseArea.y),
-            UnityEngine.Random.Range(baseArea.width, baseArea.height), 0
-        );
+        Vector3Int getRandomVector3() => new Vector3Int(UnityEngine.Random.Range(baseArea.x, baseArea.y),
+                        UnityEngine.Random.Range(baseArea.width, baseArea.height), 0);
+
+        var playerStartPosition = getRandomVector3();
         // set player position
         PlayerTileMap.SetTile(playerStartPosition, PlayerSample1);
         // set camera position
         mainCamera.transform.position = playerStartPosition + new Vector3Int(0, 0, -30);
 
+        // spawn base
+        Vector3Int basePosition = playerStartPosition;
+        while (basePosition == playerStartPosition)
+            basePosition = getRandomVector3();
+        PlayerTileMap.SetTile(basePosition, BaseTileMap);
 
     }
 

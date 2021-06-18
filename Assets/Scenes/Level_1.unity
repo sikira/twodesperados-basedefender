@@ -290,6 +290,8 @@ MonoBehaviour:
   FloorTileSample1: {fileID: 11400000, guid: 631cb5441e7f2084ca3cb8b5cc22398c, type: 2}
   ObstacleSample1: {fileID: 11400000, guid: 9c2fb95bd3370e544987fcbf7322714e, type: 2}
   PlayerSample1: {fileID: 11400000, guid: b02d289a5ad00e149b9f0c3585ee3f48, type: 2}
+  BaseTileMap: {fileID: 11400000, guid: 0532548a7f028eb4eae03ab2cd95c553, type: 2}
+  SpawnerTileMap: {fileID: 11400000, guid: c7deb12e86414964cb2fe4e752e7190d, type: 2}
 --- !u!1 &825610150
 GameObject:
   m_ObjectHideFlags: 0
