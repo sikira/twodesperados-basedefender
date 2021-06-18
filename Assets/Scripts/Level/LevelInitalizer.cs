@@ -10,6 +10,7 @@ public class LevelInitalizer : MonoBehaviour
     public MainPlayer player;
     public PlayerBase playerBase;
     public Camera mainCamera;
+    public EnemySpawner enemySpawner;
 
     public LevelData levelData;
     public Tilemap FloorTileMap;
@@ -17,8 +18,6 @@ public class LevelInitalizer : MonoBehaviour
     public Tilemap EnemyTileMap;
     public TileBase FloorTileSample1;
     public TileBase ObstacleSample1;
-    public TileBase PlayerSample1;
-    public TileBase BaseTileMap;
     public TileBase SpawnerTileMap;
 
 
@@ -40,22 +39,22 @@ public class LevelInitalizer : MonoBehaviour
     private void InitalizeEnemySpawner()
     {
         var random = new System.Random();
+        //TODO: make better random funciton
         // **** Solution 1  ****//
-        var spawnerPosition = new List<Vector3Int>();
         for (int i = 0; i < levelData.NumberOfEnemySpawner && spawnListPosition.Count() > 0; i++)
         {
-            // better random resoults, there other ways to create this. Use seed :D
+            // better random resaults, there other ways to get better res. :D
             for (int j = 0; j < 50; j++)
                 random.Next(0, 100);
 
             var pos = random.Next(0, spawnListPosition.Count());
-            if (pos > spawnerPosition.Count())
+            if (pos < spawnListPosition.Count())
             {
-                spawnerPosition.Add(spawnListPosition[pos]);
+                enemySpawner.spawnerPosition.Add(spawnListPosition[pos]);
                 spawnListPosition.RemoveAt(pos);
             }
         }
-        foreach (var pos in spawnerPosition)
+        foreach (var pos in enemySpawner.spawnerPosition)
             EnemyTileMap.SetTile(pos, SpawnerTileMap);
 
         // **** Solution 2  ****//
@@ -87,8 +86,10 @@ public class LevelInitalizer : MonoBehaviour
 
         var playerStartPosition = getRandomVector3();
         // set player position
-        player.GetComponent<Rigidbody2D>().MovePosition(new Vector2(playerStartPosition.x, playerStartPosition.y));
-        
+        // var playerWorldPositoin = FloorTileMap.GetCellCenterWorld(playerStartPosition);
+        // player.GetComponent<Rigidbody2D>().MovePosition(new Vector2(playerWorldPositoin.x, playerWorldPositoin.y));
+        player.GetComponent<Rigidbody2D>().MovePosition(FloorTileMap.GetCellCenterWorld(playerStartPosition));
+
 
         // spawn base
         Vector3Int basePosition = playerStartPosition;
@@ -96,7 +97,7 @@ public class LevelInitalizer : MonoBehaviour
             basePosition = getRandomVector3();
 
         // playerBase.GetComponent<Rigidbody2D>().MovePosition(new Vector2(basePosition.x, basePosition.y));
-        playerBase.transform.position = basePosition;
+        playerBase.transform.position = FloorTileMap.GetCellCenterWorld(basePosition); ;
 
     }
 
