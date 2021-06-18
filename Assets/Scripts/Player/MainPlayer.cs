@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class MainPlayer : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private PlayersControls controls;
+    private float horizontalMove = 0;
+    private float verticalMove = 0;
+    public float speed = 22;
+
     void Start()
     {
-        
-    }
+        controls = this.GetComponent<PlayersControls>();
 
-    // Update is called once per frame
+
+    }
     void Update()
     {
-        
+        horizontalMove = Input.GetAxis("Horizontal") * speed;
+        verticalMove = Input.GetAxis("Vertical") * speed;
+
+
     }
+    void FixedUpdate()
+    {
+        // controls
+        controls.Move(horizontalMove * Time.deltaTime, verticalMove * Time.deltaTime);
+
+
+    }
+
+
 }
