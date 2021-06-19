@@ -13,7 +13,7 @@ public class NodeDebugger : MonoBehaviour
 
         for (var i = 0; i < mesh.Length; i++)
         {
-            var node = Instantiate(NodePrefab, worldPosition[i], nodeHolder.transform.rotation, nodeHolder.transform);
+            var node = Instantiate(NodePrefab, worldPosition[i] + new Vector3(0, 0, -0.2f), nodeHolder.transform.rotation, nodeHolder.transform);
             dic.Add(mesh[i], node);
         }
     }
@@ -28,7 +28,6 @@ public class NodeDebugger : MonoBehaviour
 
         // Create Main Holders
         nodeHolder = new GameObject(nodeHolderName);
-        nodeHolder.transform.position = Vector3.zero;
         nodeHolder.transform.parent = transform;
 
     }

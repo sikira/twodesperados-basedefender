@@ -25,7 +25,11 @@ public class LevelData
         get => sizeX;
         set
         {
-            if (value >= minSizeX && value <= maxSizeX) sizeX = value;
+            if (value >= minSizeX && value <= maxSizeX)
+            {
+                sizeX = value;
+                _baseArea = null;
+            }
         }
     }
     public int SizeY
@@ -33,7 +37,11 @@ public class LevelData
         get => sizeY;
         set
         {
-            if (value >= minSizeY && value <= maxSizeY) sizeY = value;
+            if (value >= minSizeY && value <= maxSizeY)
+            {
+                sizeY = value;
+                _baseArea = null;
+            }
         }
     }
 

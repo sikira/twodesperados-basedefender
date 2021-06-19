@@ -11,6 +11,9 @@ public class LevelInitalizer
     private GameObject mainLevelHolder;
     private LevelRefHolder levelRef;
 
+    private static int LastSizeX = 0;
+    private static int LastSizeY = 0;
+
 
     private List<Vector3Int> spawnListPosition = new List<Vector3Int>();
 
@@ -49,9 +52,9 @@ public class LevelInitalizer
 
     private void ClearAll()
     {
-        for (int i = 0; i < levelData.SizeX; i++)
+        for (int i = 0; i < LastSizeX; i++)
         {
-            for (int j = 0; j < levelData.SizeY; j++)
+            for (int j = 0; j < LastSizeY; j++)
             {
                 levelRef.FloorTileMap.SetTile(new Vector3Int(i, j, 0), null);
                 levelRef.EnemyTileMap.SetTile(new Vector3Int(i, j, 0), null);
@@ -139,6 +142,9 @@ public class LevelInitalizer
     {
         var lista = new List<Vector3Int>();
         var worldPosition = new List<Vector3>();
+        LastSizeX = levelData.SizeX;
+        LastSizeY = levelData.SizeY;
+
         for (int i = 0; i < levelData.SizeX; i++)
             for (int j = 0; j < levelData.SizeY; j++)
             {

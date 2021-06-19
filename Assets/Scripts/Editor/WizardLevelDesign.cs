@@ -33,7 +33,8 @@ namespace BaseDefender.Editor
             using (var check = new EditorGUI.ChangeCheckScope())
             {
                 data.SizeX = EditorGUILayout.IntField("Width Nodes", data.SizeX);
-                data.SizeY = EditorGUILayout.IntField("Width Nodes", data.SizeY);
+                data.SizeY = EditorGUILayout.IntField("Height Nodes", data.SizeY);
+                data.NumberOfEnemySpawner = EditorGUILayout.IntField("Enemy Spawner", data.NumberOfEnemySpawner);
 
                 GUILayout.Space(20f);
 
