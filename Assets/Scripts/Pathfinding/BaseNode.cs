@@ -18,6 +18,7 @@ public class BaseNode
         this.Position = Position;
     }
 
+    public override string ToString() => $"BaseNode({ Position.x}, { Position.y} )";
     public static bool operator ==(BaseNode left, BaseNode right)
     {
         if (left?.Position.x == right?.Position.x && left?.Position.y == right?.Position.y)
@@ -29,7 +30,7 @@ public class BaseNode
     public bool Equals(BaseNode right) => this == right;
 
     public override int GetHashCode() => Position.GetHashCode();
-    
+
     //TODO: sredi ovo jer si hardovvao da ne izbaljue gresku
     public bool Equals(Object right) => false;
 }

@@ -31,17 +31,25 @@ public class AStarAlgo : INodePathfinder
         startNode.H = CalculateDistanceCost(startNode, endNode);
 
 
-        openList.Add(startNode);
+        Debug.Log($"Pocni traziti nesto { maxWidth} {maxHeight}");
 
+        openList.Add(startNode);
 
 
         while (openList.Count > 0)
         {
             BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
 
+            Debug.Log($"Open list:{openList.Count}");
+
             if (lowestFCostNode == endNode)
             {
                 Debug.Log("nasli smo nesto");
+                var path = CalculatePath(endNode);
+                foreach (var n in path)
+                {
+                    Debug.Log(n);
+                }
                 return;
             }
 
@@ -51,12 +59,39 @@ public class AStarAlgo : INodePathfinder
             // convert to IEnumeralble and use in foreach
             var neighbourList = GetNeighbourList(lowestFCostNode);
 
-            foreach (var neighnourNode in neighbourList)
+            foreach (var neighbourNode in neighbourList)
             {
-                
+                int checkGCost = lowestFCostNode.G + CalculateDistanceCost(lowestFCostNode, neighbourNode);
+                if (checkGCost < neighbourNode.G)
+                {
+                    Debug.Log(lowestFCostNode);
+                    neighbourNode.Parent = lowestFCostNode;
+                    neighbourNode.G = checkGCost;
+                    neighbourNode.H = CalculateDistanceCost(neighbourNode, endNode);
+
+                    //TODO: recheck if needed
+                    if (!openList.Contains(neighbourNode))
+                        openList.Add(neighbourNode);
+                }
             }
 
         }
+
+        Debug.Log("nije nasao nista");
+    }
+
+    private List<BaseNode> CalculatePath(BaseNode endNode)
+    {
+        List<BaseNode> path = new List<BaseNode>();
+        path.Add(endNode);
+        BaseNode currentNode = endNode;
+        while (currentNode.Parent != null)
+        {
+            path.Add(currentNode.Parent);
+            currentNode = currentNode.Parent;
+        }
+        path.Reverse();
+        return path;
     }
 
     private List<BaseNode> GetNeighbourList(BaseNode currentNode)
