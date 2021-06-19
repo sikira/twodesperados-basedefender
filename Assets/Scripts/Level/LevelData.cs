@@ -6,12 +6,14 @@ using UnityEngine;
 
 public class LevelData
 {
+    public static readonly string MAIN_GAMEOBJECT_NAME = "MainGameEngine";
+
     private const int minSizeX = 10;
     private const int minSizeY = 10;
     private const int maxSizeX = 666;
     private const int maxSizeY = 666;
-    private int sizeX = 25;
-    private int sizeY = 20;
+    [Range(10, 666)] private int sizeX = 25;
+    [Range(10, 666)] private int sizeY = 20;
 
     private Nullable<RectInt> _baseArea = null;
     public int NumberOfEnemySpawner = 4;

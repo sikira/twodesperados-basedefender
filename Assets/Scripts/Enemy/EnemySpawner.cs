@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public List<Vector3Int> spawnerPosition = new List<Vector3Int>();
+    private List<Vector3Int> spawnerPosition = new List<Vector3Int>();
     public Tilemap EnemyTilemap;
 
 
@@ -22,6 +22,11 @@ public class EnemySpawner : MonoBehaviour
 
     }
 
+    public void SetSpawnerPositions(List<Vector3Int> newPositons)
+    {
+        spawnerPosition = newPositons;
+    }
+
     void SpawnEnemy()
     {
         foreach (var pos in spawnerPosition)
@@ -31,7 +36,7 @@ public class EnemySpawner : MonoBehaviour
 
             var sprite = enemy.GetComponent<SpriteRenderer>();
             sprite.sortingOrder = 22;
-            
+
         }
     }
 }

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace BaseDefender.Editor
 {
 
     public class WizardLevelDesign : ScriptableWizard
     {
-        LevelData data;
+        public LevelData data;
 
         private void OnEnable()
         {
@@ -27,6 +28,22 @@ namespace BaseDefender.Editor
             DrawLevelData();
         }
 
+        private void DrawLevelData()
+        {
+            using (var check = new EditorGUI.ChangeCheckScope())
+            {
+                data.SizeX = EditorGUILayout.IntField("Width Nodes", data.SizeX);
+                data.SizeY = EditorGUILayout.IntField("Width Nodes", data.SizeY);
 
+                GUILayout.Space(20f);
+
+                if (GUILayout.Button("Create Random Level!"))
+                {
+                    LevelInitalizer initalizer = new LevelInitalizer();
+                    initalizer.Init(data);
+
+                }
+            }
+        }
     }
 }
