@@ -14,8 +14,6 @@ namespace BaseDefender.Editor
         private void OnEnable()
         {
             data = new LevelData();
-            // data = LevelData.loadMe();
-            // SceneView.duringSceneGui += onDuringSceneGui;
         }
 
         [MenuItem("Base Defender/Level Design")]
@@ -42,7 +40,13 @@ namespace BaseDefender.Editor
                 {
                     LevelInitalizer initalizer = new LevelInitalizer();
                     initalizer.Init(data);
+                }
 
+                if (GUILayout.Button("Find Path A*"))
+                {
+                    AStarAlgo aStar = new AStarAlgo();
+
+                    aStar.Find(new Vector2Int(1, 2), new Vector2Int(10, 9), data);
                 }
             }
         }
