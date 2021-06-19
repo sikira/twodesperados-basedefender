@@ -34,6 +34,13 @@ public class LevelInitalizer : MonoBehaviour
         InitlaizeFloorAndBoundries();
         InitalizePlayerAndBase();
         InitalizeEnemySpawner();
+        InitalizeObstaclesAndDestObstables();
+    }
+
+    private void InitalizeObstaclesAndDestObstables()
+    {
+
+
     }
 
     private void InitalizeEnemySpawner()
@@ -80,12 +87,11 @@ public class LevelInitalizer : MonoBehaviour
 
     private void InitalizePlayerAndBase()
     {
-        var baseArea = levelData.BaseArea;
-        Vector3Int getRandomVector3() => new Vector3Int(UnityEngine.Random.Range(baseArea.x, baseArea.y),
-                        UnityEngine.Random.Range(baseArea.width, baseArea.height), 0);
+        Vector3Int getRandomVector3() => new Vector3Int(UnityEngine.Random.Range(levelData.BaseArea.x, levelData.BaseArea.y),
+                UnityEngine.Random.Range(levelData.BaseArea.width, levelData.BaseArea.height), 0);
 
         var playerStartPosition = getRandomVector3();
-        // set player position
+        // setting player position
         // var playerWorldPositoin = FloorTileMap.GetCellCenterWorld(playerStartPosition);
         // player.GetComponent<Rigidbody2D>().MovePosition(new Vector2(playerWorldPositoin.x, playerWorldPositoin.y));
         player.GetComponent<Rigidbody2D>().MovePosition(FloorTileMap.GetCellCenterWorld(playerStartPosition));
@@ -96,6 +102,7 @@ public class LevelInitalizer : MonoBehaviour
         while (basePosition == playerStartPosition)
             basePosition = getRandomVector3();
 
+        // setting base position
         // playerBase.GetComponent<Rigidbody2D>().MovePosition(new Vector2(basePosition.x, basePosition.y));
         playerBase.transform.position = FloorTileMap.GetCellCenterWorld(basePosition); ;
 
@@ -106,12 +113,16 @@ public class LevelInitalizer : MonoBehaviour
         for (int i = 0; i < levelData.SizeX; i++)
             for (int j = 0; j < levelData.SizeY; j++)
             {
+
                 if (i == 0 || j == 0 || i == levelData.SizeX - 1 || j == levelData.SizeY - 1)
+                    // creating outside wall
                     ObstacleTileMap.SetTile(new Vector3Int(i, j, 0), ObstacleSample1);
                 else
                 {
+                    // getting posible spawn positions
                     if (i == 1 || j == 1 || i == levelData.SizeX - 2 || j == levelData.SizeY - 2)
                         spawnListPosition.Add(new Vector3Int(i, j, 0));
+                    // setting basic floor
                     FloorTileMap.SetTile(new Vector3Int(i, j, 0), FloorTileSample1);
                 }
             }

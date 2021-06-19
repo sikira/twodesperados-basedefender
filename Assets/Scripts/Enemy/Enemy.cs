@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        controls.Move(1 * Time.deltaTime, 2 * Time.deltaTime);
+        // controls.Move(1 * Time.deltaTime, 2 * Time.deltaTime);
 
     }
 }

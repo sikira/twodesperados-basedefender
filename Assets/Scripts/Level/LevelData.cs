@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
@@ -12,7 +13,10 @@ public class LevelData
     private int sizeX = 25;
     private int sizeY = 20;
 
+    private Nullable<RectInt> _baseArea = null;
     public int NumberOfEnemySpawner = 4;
+
+
 
     public int SizeX
     {
@@ -35,22 +39,20 @@ public class LevelData
     {
         get
         {
-            var centerPoint = new Point(SizeX / 2, SizeY / 2);
-            //TODO: make offset array 1/5 of map or 15 max;
+            if (_baseArea is null)
+            {
+                var centerPoint = new Point(SizeX / 2, SizeY / 2);
+                //TODO: make offset array 1/5 of map or 15 max;
 
-            var minAreaSize = Mathf.Min(SizeX, SizeY);
+                var minAreaSize = Mathf.Min(SizeX, SizeY);
 
-            var offsetArea = minAreaSize / 5 > 15 ? 15 : Mathf.FloorToInt(minAreaSize / 5);
-            if (offsetArea < 2)
-                offsetArea = 2;
+                var offsetArea = minAreaSize / 5 > 15 ? 15 : Mathf.FloorToInt(minAreaSize / 5);
+                if (offsetArea < 2)
+                    offsetArea = 2;
 
-            return new RectInt(centerPoint.X - offsetArea, centerPoint.X + offsetArea, centerPoint.Y - offsetArea, centerPoint.Y + offsetArea);
-            // return new Vector3Int[]{
-            //     new Vector3Int(centerPoint.X - offsetArea, centerPoint.Y - offsetArea,0),
-            //     new Vector3Int(centerPoint.X + offsetArea, centerPoint.Y - offsetArea,0),
-            //     new Vector3Int(centerPoint.X + offsetArea, centerPoint.Y + offsetArea,0),
-            //     new Vector3Int(centerPoint.X - offsetArea, centerPoint.Y + offsetArea,0)
-            // };
+                _baseArea = new RectInt(centerPoint.X - offsetArea, centerPoint.X + offsetArea, centerPoint.Y - offsetArea, centerPoint.Y + offsetArea);
+            }
+            return _baseArea.GetValueOrDefault();
         }
     }
 
