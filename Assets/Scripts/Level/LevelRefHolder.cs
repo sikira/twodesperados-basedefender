@@ -16,4 +16,6 @@ public class LevelRefHolder : MonoBehaviour
     public TileBase FloorTileSample1;
     public TileBase ObstacleSample1;
     public TileBase SpawnerTileMap;
+
+    // public Dictionary<> CompleteLevelNodes;
 }

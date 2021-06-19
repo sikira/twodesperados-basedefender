@@ -21,7 +21,6 @@ public class LevelInitalizer
     }
     public void Init(LevelData data)
     {
-        Debug.Log("Level Initalizer: Init()");
         levelData = data;
         levelRef = GameObject.FindObjectOfType<LevelRefHolder>();
         InitLevel();
@@ -34,21 +33,10 @@ public class LevelInitalizer
             throw new ArgumentNullException("Moraju biti posavljeni");
         }
 
-        // InitalizeObjects();
-        Debug.Log("Level Initalizer: Init TIles()");
         InitalizeTiles();
     }
 
-    // private void InitalizeObjects()
-    // {
-    //     var existingGameObject = GameObject.Find(LevelData.MAIN_GAMEOBJECT_NAME);
-    //     if (existingGameObject != null)
-    //         GameObject.DestroyImmediate(existingGameObject.gameObject);
 
-    //     // Create Main Holders
-    //     mainLevelHolder = new GameObject(LevelData.MAIN_GAMEOBJECT_NAME);
-    //     mainLevelHolder.transform.position = Vector3.zero;
-    // }
 
     private void InitalizeTiles()
     {
@@ -149,9 +137,13 @@ public class LevelInitalizer
 
     private void InitlaizeFloorAndBoundries()
     {
+        var lista = new List<Vector3Int>();
+        var worldPosition = new List<Vector3>();
         for (int i = 0; i < levelData.SizeX; i++)
             for (int j = 0; j < levelData.SizeY; j++)
             {
+                lista.Add(new Vector3Int(i, j, 0));
+                worldPosition.Add(levelRef.FloorTileMap.GetCellCenterWorld(new Vector3Int(i, j, 0)));
 
                 if (i == 0 || j == 0 || i == levelData.SizeX - 1 || j == levelData.SizeY - 1)
                     // creating outside wall
@@ -165,5 +157,7 @@ public class LevelInitalizer
                     levelRef.FloorTileMap.SetTile(new Vector3Int(i, j, 0), levelRef.FloorTileSample1);
                 }
             }
+
+        GameObject.FindObjectOfType<NodeDebugger>()?.InitalizeMesh(lista.ToArray(), worldPosition.ToArray());
     }
 }
