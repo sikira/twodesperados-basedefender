@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class AStarAlgo : INodePathfinder
@@ -11,6 +12,9 @@ public class AStarAlgo : INodePathfinder
     private const int MOVE_DIAGONAL_COST = 14;
     int maxWidth;
     int maxHeight;
+
+    BaseNode startNode;
+    BaseNode endNode;
     private List<BaseNode> openList;
     private List<BaseNode> closedList;
     private List<BaseNode> completeMap;
@@ -24,67 +28,74 @@ public class AStarAlgo : INodePathfinder
         closedList = new List<BaseNode>();
         completeMap = CompleteMesh();
 
-        var endNode = new BaseNode(endPosition);
+        endNode = new BaseNode(endPosition);
 
-        var startNode = new BaseNode(startPosition);
+        startNode = new BaseNode(startPosition);
         startNode.G = 0;
         startNode.H = CalculateDistanceCost(startNode, endNode);
 
 
-        p();
-
         openList.Add(startNode);
 
 
+        // FindStep();
+
         while (openList.Count > 0)
         {
-           FindStep();
-
+            FindStep();
         }
 
-        Debug.Log("nije nasao nista");
     }
 
-    private void FindStep()
+    public void FindStep()
     {
-         BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
+        if (openList.Count == 0)
+        {
+            Debug.Log("no open list");
+            return;
+        }
+        // Debug.Log("FindStep");
 
-            p();
-            Debug.Log($"lowestFCostNode:{lowestFCostNode}");
+        BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
 
-            if (lowestFCostNode == endNode)
+        Debug.Log($"lowestFCostNode:{lowestFCostNode}");
+
+        if (lowestFCostNode == endNode)
+        {
+            Debug.Log("Kraj pronadjeno sve!");
+            var path = CalculatePath(endNode);
+            foreach (var n in path)
             {
-                Debug.Log("Kraj pronadjeno sve!");
-                p();
-                var path = CalculatePath(endNode);
-                foreach (var n in path)
-                {
-                    Debug.Log(n);
-                }
-                return;
+                Debug.Log(n);
             }
+            return;
+        }
 
-            openList.Remove(lowestFCostNode);
-            closedList.Add(lowestFCostNode);
+        openList.Remove(lowestFCostNode);
+        closedList.Add(lowestFCostNode);
 
-            // convert to IEnumeralble and use in foreach
-            var neighbourList = GetNeighbourList(lowestFCostNode);
+        // convert to IEnumeralble and use in foreach
+        var neighbourList = GetNeighbourList(lowestFCostNode);
 
-            foreach (var neighbourNode in neighbourList)
+        GameObject.FindObjectOfType<NodeDebugger>()?.ShowCurrentNode(lowestFCostNode);
+        GameObject.FindObjectOfType<NodeDebugger>()?.ShowNeigbours(neighbourList);
+
+
+        foreach (var neighbourNode in neighbourList)
+        {
+            int checkGCost = lowestFCostNode.G + CalculateDistanceCost(lowestFCostNode, neighbourNode);
+            if (checkGCost < neighbourNode.G)
             {
-                int checkGCost = lowestFCostNode.G + CalculateDistanceCost(lowestFCostNode, neighbourNode);
-                if (checkGCost < neighbourNode.G)
-                {
-                    Debug.Log(lowestFCostNode);
-                    neighbourNode.Parent = lowestFCostNode;
-                    neighbourNode.G = checkGCost;
-                    neighbourNode.H = CalculateDistanceCost(neighbourNode, endNode);
+                Debug.Log(lowestFCostNode);
+                neighbourNode.Parent = lowestFCostNode;
+                neighbourNode.G = checkGCost;
+                neighbourNode.H = CalculateDistanceCost(neighbourNode, endNode);
 
-                    //TODO: recheck if needed
-                    if (!openList.Contains(neighbourNode))
-                        openList.Add(neighbourNode);
-                }
+                //TODO: recheck if needed
+                if (!openList.Contains(neighbourNode))
+                    openList.Add(neighbourNode);
             }
+        }
     }
 
     private void p()

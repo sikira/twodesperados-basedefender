@@ -16,6 +16,8 @@ namespace BaseDefender.Editor
             data = new LevelData();
         }
 
+        private AStarAlgo aStar;
+
         [MenuItem("Base Defender/Level Design")]
         private static void MenuEntryCall()
         {
@@ -44,10 +46,15 @@ namespace BaseDefender.Editor
 
                 if (GUILayout.Button("Find Path A*"))
                 {
-                    AStarAlgo aStar = new AStarAlgo();
-
+                    aStar = new AStarAlgo();
                     aStar.Find(new Vector2Int(1, 2), new Vector2Int(10, 9), data);
                 }
+
+                if (GUILayout.Button("Step in Path A*"))
+                {
+                    aStar?.FindStep();                    
+                }
+
             }
         }
     }

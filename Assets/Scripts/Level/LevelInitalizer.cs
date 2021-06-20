@@ -140,7 +140,7 @@ public class LevelInitalizer
 
     private void InitlaizeFloorAndBoundries()
     {
-        var lista = new List<Vector3Int>();
+        var lista = new List<Vector2Int>();
         var worldPosition = new List<Vector3>();
         LastSizeX = levelData.SizeX;
         LastSizeY = levelData.SizeY;
@@ -148,7 +148,7 @@ public class LevelInitalizer
         for (int i = 0; i < levelData.SizeX; i++)
             for (int j = 0; j < levelData.SizeY; j++)
             {
-                lista.Add(new Vector3Int(i, j, 0));
+                lista.Add(new Vector2Int(i, j));
                 worldPosition.Add(levelRef.FloorTileMap.GetCellCenterWorld(new Vector3Int(i, j, 0)));
 
                 if (i == 0 || j == 0 || i == levelData.SizeX - 1 || j == levelData.SizeY - 1)
