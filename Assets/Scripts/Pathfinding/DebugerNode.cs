@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DebugerNode : MonoBehaviour
 {
     public List<SpriteRenderer> marks = new List<SpriteRenderer>();
+    public List<bool> marksBool = new List<bool>();
 
     void OnBecameVisible()
     {
@@ -18,22 +20,41 @@ public class DebugerNode : MonoBehaviour
     public void Dectivate()
     {
         this.gameObject.SetActive(false);
-        foreach (var mark in marks)
+        marksBool = new List<bool>();
+        for (int i = 0; i < marks.Count; i++)
         {
-            DeactivateMark(mark);
+            marksBool.Add(false);
+            DeactivateMark(i);
         }
     }
 
-    private void DeactivateMark(SpriteRenderer mark)
+    public void DeactivateMark(int LayerNumber)
     {
-        mark.enabled = false;
-        mark.color = Color.white;
+        marks[LayerNumber].enabled = false;
+        marks[LayerNumber].color = Color.white;
+        marksBool[LayerNumber] = false;
+
+        if (!marksBool.Contains(true))
+            this.gameObject.SetActive(false);
     }
 
-    internal void SetNode(Color currentPositionColor)
+
+
+    public void SetNode(int LayerNumber, Color currentPositionColor)
     {
-        this.gameObject.SetActive(true);
-        marks[0].enabled = true;
-        marks[0].color = currentPositionColor;
+        if (LayerNumber > 0 && LayerNumber < marks.Count)
+        {
+            this.gameObject.SetActive(true);
+            marks[LayerNumber].enabled = true;
+            marks[LayerNumber].color = currentPositionColor;
+            marksBool[LayerNumber] = true;
+        }
+    }
+
+    internal bool IsLayerActive(int layerNumber)
+    {
+        if (layerNumber > 0 && layerNumber < marks.Count)
+            return marksBool[layerNumber];
+        return false;
     }
 }

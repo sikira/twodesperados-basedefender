@@ -23,13 +23,16 @@ public class AStarAlgo : INodePathfinder
     private bool canWalkDiagonaly = false;
     private readonly Vector2Int[] neighbourPositions = new Vector2Int[] { new Vector2Int(-1, 0), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(0, 1) };
 
+    IDebuggerPathfinding debuger;
 
-    public void Find(Vector2Int startPosition, Vector2Int endPosition, LevelData dataFake)
+    public void Find(Vector2Int startPosition, Vector2Int endPosition, LevelData dataFake, int layer)
     {
+        DebugLayerNumber = layer;
         nonWalkablesList.RemoveAt(9);
         nonWalkablesList.Add(new BaseNode(new Vector2Int(9, 4)));
 
 
+        debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
         maxWidth = dataFake.SizeX;
         maxHeight = dataFake.SizeY;
 
@@ -70,7 +73,7 @@ public class AStarAlgo : INodePathfinder
         {
             Debug.Log("Kraj pronadjeno sve!");
             var path = CalculatePath(lowestFCostNode);
-            GameObject.FindObjectOfType<DebuggerPathfinding>()?.DebugPath(DebugLayerNumber, path);
+            debuger?.DebugPath(DebugLayerNumber, path);
 
             return true;
         }
@@ -81,7 +84,7 @@ public class AStarAlgo : INodePathfinder
         // convert to IEnumeralble and use in foreach
         var neighbourList = GetNeighbourList(lowestFCostNode);
 
-        GameObject.FindObjectOfType<DebuggerPathfinding>()?.DebugSearch(DebugLayerNumber, lowestFCostNode, openList, closedList, neighbourList);
+        debuger?.DebugSearch(DebugLayerNumber, lowestFCostNode, openList, closedList, neighbourList);
 
 
         foreach (var neighbourNode in neighbourList)

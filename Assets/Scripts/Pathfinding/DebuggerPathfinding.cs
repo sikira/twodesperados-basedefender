@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -11,7 +12,16 @@ public class DebuggerColorPalete
     public Color OpenListColor = Color.green;
     public Color ClosedListColor = Color.red;
 }
-public class DebuggerPathfinding : MonoBehaviour
+
+public interface IDebuggerPathfinding
+{
+    void DebugPath(int layerNumber, List<BaseNode> path);
+    void DebugSearch(int layerNumber, BaseNode currentNode, List<BaseNode> openList, List<BaseNode> closedList, List<BaseNode> neighbourList);
+    void InitalizeMesh(Vector2Int[] mesh, Vector3[] worldPosition);
+    void MarkCurrentNode(BaseNode node, int layerNumber, Color color);
+}
+
+public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
 {
     public Transform NodePrefab;
     private Dictionary<Vector2Int, Transform> dic = new Dictionary<Vector2Int, Transform>();
@@ -41,34 +51,38 @@ public class DebuggerPathfinding : MonoBehaviour
         nodeHolder.transform.parent = transform;
     }
 
-    private DebuggerColorPalete GetPalet(int debugLayerNumber)
+    private DebuggerColorPalete GetPalet(int layerNumber)
     {
         return new DebuggerColorPalete();
     }
-    public void DebugSearch(int debugLayerNumber, BaseNode currentNode, List<BaseNode> openList, List<BaseNode> closedList, List<BaseNode> neighbourList)
+    public void DebugSearch(int layerNumber, BaseNode currentNode, List<BaseNode> openList, List<BaseNode> closedList, List<BaseNode> neighbourList)
     {
+        foreach (var node in neighbourList)
+            MarkCurrentNode(node, layerNumber, GetPalet(layerNumber).NeighboursColor);
+
         foreach (var openNode in openList)
-            MarkCurrentNode(openNode, GetPalet(debugLayerNumber).OpenListColor);
+            MarkCurrentNode(openNode, layerNumber, GetPalet(layerNumber).OpenListColor);
 
         foreach (var node in closedList)
-            MarkCurrentNode(node, GetPalet(debugLayerNumber).ClosedListColor);
+            MarkCurrentNode(node, layerNumber, GetPalet(layerNumber).ClosedListColor);
 
-        foreach (var node in neighbourList)
-            MarkCurrentNode(node, GetPalet(debugLayerNumber).NeighboursColor);
-
-        MarkCurrentNode(currentNode, GetPalet(debugLayerNumber).PositionColor);
+        MarkCurrentNode(currentNode, layerNumber, GetPalet(layerNumber).PositionColor);
     }
 
-    public void DebugPath(int debugLayerNumber, List<BaseNode> path)
+    public void DebugPath(int layerNumber, List<BaseNode> path)
     {
+        var allMarked = dic.Where(k => k.Value.GetComponent<DebugerNode>()?.IsLayerActive(layerNumber) == true).Select(k => k.Value.GetComponent<DebugerNode>());
+        foreach (var mark in allMarked)
+            mark.DeactivateMark(layerNumber);
+
         foreach (var pathNode in path)
-            MarkCurrentNode(pathNode, GetPalet(debugLayerNumber).ValidPathColor);
+            MarkCurrentNode(pathNode, layerNumber, GetPalet(layerNumber).ValidPathColor);
     }
 
-    public void MarkCurrentNode(BaseNode node, Color color)
+    public void MarkCurrentNode(BaseNode node, int layerNumber, Color color)
     {
         if (node != null)
-            dic[node.Position]?.GetComponent<DebugerNode>()?.SetNode(color);
+            dic[node.Position]?.GetComponent<DebugerNode>()?.SetNode(layerNumber, color);
     }
 
     // internal void MarkNeigbours(List<BaseNode> neighbourList, Color color)
