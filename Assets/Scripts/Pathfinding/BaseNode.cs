@@ -33,4 +33,6 @@ public class BaseNode
 
     //TODO: sredi ovo jer si hardovvao da ne izbaljue gresku
     public bool Equals(Object right) => false;
+
+    
 }

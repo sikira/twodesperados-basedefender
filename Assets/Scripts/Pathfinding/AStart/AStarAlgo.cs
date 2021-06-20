@@ -24,27 +24,38 @@ public class AStarAlgo : INodePathfinder
         closedList = new List<BaseNode>();
         completeMap = CompleteMesh();
 
-        var endNode = new BaseNode(startPosition);
+        var endNode = new BaseNode(endPosition);
 
         var startNode = new BaseNode(startPosition);
         startNode.G = 0;
         startNode.H = CalculateDistanceCost(startNode, endNode);
 
 
-        Debug.Log($"Find dimensions { maxWidth} {maxHeight}");
+        p();
 
         openList.Add(startNode);
 
 
         while (openList.Count > 0)
         {
-            BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
+           FindStep();
 
-            Debug.Log($"Open list:{openList.Count}");
+        }
+
+        Debug.Log("nije nasao nista");
+    }
+
+    private void FindStep()
+    {
+         BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
+
+            p();
+            Debug.Log($"lowestFCostNode:{lowestFCostNode}");
 
             if (lowestFCostNode == endNode)
             {
-                Debug.Log("nasli smo nesto");
+                Debug.Log("Kraj pronadjeno sve!");
+                p();
                 var path = CalculatePath(endNode);
                 foreach (var n in path)
                 {
@@ -74,10 +85,14 @@ public class AStarAlgo : INodePathfinder
                         openList.Add(neighbourNode);
                 }
             }
+    }
 
-        }
-
-        Debug.Log("nije nasao nista");
+    private void p()
+    {
+        Debug.Log($"Find dimensions { maxWidth} {maxHeight}");
+        Debug.Log($"completeMap { completeMap.Count}");
+        Debug.Log($"openList { openList.Count}");
+        Debug.Log($"closedList { closedList.Count}");
     }
 
     private List<BaseNode> CalculatePath(BaseNode endNode)
