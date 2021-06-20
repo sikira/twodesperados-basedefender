@@ -31,7 +31,7 @@ public class AStarAlgo : INodePathfinder
         startNode.H = CalculateDistanceCost(startNode, endNode);
 
 
-        Debug.Log($"Pocni traziti nesto { maxWidth} {maxHeight}");
+        Debug.Log($"Find dimensions { maxWidth} {maxHeight}");
 
         openList.Add(startNode);
 
