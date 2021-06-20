@@ -7,20 +7,29 @@ using UnityEngine;
 
 public class AStarAlgo : INodePathfinder
 {
-
+    public int DebugLayerNumber = 0;
     private const int MOVE_STRAIGHT_COST = 10;
     private const int MOVE_DIAGONAL_COST = 14;
     int maxWidth;
     int maxHeight;
 
     BaseNode startNode;
-    BaseNode endNode;
+    BaseNode endNodeMark;
     private List<BaseNode> openList;
     private List<BaseNode> closedList;
+    private List<BaseNode> nonWalkablesList = Enumerable.Range(0, 20).Select(n => new BaseNode(new Vector2Int(n, 4))).ToList();
+
     private List<BaseNode> completeMap;
+    private bool canWalkDiagonaly = false;
+    private readonly Vector2Int[] neighbourPositions = new Vector2Int[] { new Vector2Int(-1, 0), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(0, 1) };
+
 
     public void Find(Vector2Int startPosition, Vector2Int endPosition, LevelData dataFake)
     {
+        nonWalkablesList.RemoveAt(9);
+        nonWalkablesList.Add(new BaseNode(new Vector2Int(9, 4)));
+
+
         maxWidth = dataFake.SizeX;
         maxHeight = dataFake.SizeY;
 
@@ -28,47 +37,42 @@ public class AStarAlgo : INodePathfinder
         closedList = new List<BaseNode>();
         completeMap = CompleteMesh();
 
-        endNode = new BaseNode(endPosition);
+        endNodeMark = GetNode(endPosition);
 
-        startNode = new BaseNode(startPosition);
+        startNode = GetNode(startPosition);
         startNode.G = 0;
-        startNode.H = CalculateDistanceCost(startNode, endNode);
-
+        startNode.H = CalculateDistanceCost(startNode, endNodeMark);
 
         openList.Add(startNode);
-
-
-        // FindStep();
-
-        while (openList.Count > 0)
-        {
-            FindStep();
-        }
-
     }
 
-    public void FindStep()
+    public void CalculateAll()
+    {
+        while (openList.Count > 0)
+            if (FindStep())
+                break;
+    }
+
+    public bool FindStep()
     {
         if (openList.Count == 0)
         {
             Debug.Log("no open list");
-            return;
+            return false;
         }
         // Debug.Log("FindStep");
 
         BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
 
-        Debug.Log($"lowestFCostNode:{lowestFCostNode}");
+        // Debug.Log($"lowestFCostNode:{lowestFCostNode}");
 
-        if (lowestFCostNode == endNode)
+        if (lowestFCostNode == endNodeMark)
         {
             Debug.Log("Kraj pronadjeno sve!");
-            var path = CalculatePath(endNode);
-            foreach (var n in path)
-            {
-                Debug.Log(n);
-            }
-            return;
+            var path = CalculatePath(lowestFCostNode);
+            GameObject.FindObjectOfType<DebuggerPathfinding>()?.DebugPath(DebugLayerNumber, path);
+
+            return true;
         }
 
         openList.Remove(lowestFCostNode);
@@ -77,25 +81,47 @@ public class AStarAlgo : INodePathfinder
         // convert to IEnumeralble and use in foreach
         var neighbourList = GetNeighbourList(lowestFCostNode);
 
-        GameObject.FindObjectOfType<NodeDebugger>()?.ShowCurrentNode(lowestFCostNode);
-        GameObject.FindObjectOfType<NodeDebugger>()?.ShowNeigbours(neighbourList);
+        GameObject.FindObjectOfType<DebuggerPathfinding>()?.DebugSearch(DebugLayerNumber, lowestFCostNode, openList, closedList, neighbourList);
 
 
         foreach (var neighbourNode in neighbourList)
         {
+            if (closedList.Exists(n => n.Position.x == neighbourNode.Position.x && n.Position.y == neighbourNode.Position.y))
+                continue;
+
             int checkGCost = lowestFCostNode.G + CalculateDistanceCost(lowestFCostNode, neighbourNode);
             if (checkGCost < neighbourNode.G)
             {
-                Debug.Log(lowestFCostNode);
+                if (!canWalkDiagonaly && AreDiagonalNode(lowestFCostNode, neighbourNode) && GetWalkableNodeToDiagonaleNode(lowestFCostNode, neighbourNode) == null)
+                {
+                    continue;
+                }
+
+                // Debug.Log(lowestFCostNode);
                 neighbourNode.Parent = lowestFCostNode;
                 neighbourNode.G = checkGCost;
-                neighbourNode.H = CalculateDistanceCost(neighbourNode, endNode);
+                neighbourNode.H = CalculateDistanceCost(neighbourNode, endNodeMark);
 
-                //TODO: recheck if needed
+                //TODO: recheck if needed check for contains
                 if (!openList.Contains(neighbourNode))
                     openList.Add(neighbourNode);
             }
         }
+        return false;
+    }
+
+    private BaseNode GetWalkableNodeToDiagonaleNode(BaseNode currentNode, BaseNode neighbourNode)
+    {
+        return new List<BaseNode>(){
+            GetWalkableNode(new Vector2Int(currentNode.Position.x, neighbourNode.Position.y)),
+            GetWalkableNode(new Vector2Int(neighbourNode.Position.x, currentNode.Position.y))
+        }.Where(a => a != null).FirstOrDefault();
+    }
+    private bool AreDiagonalNode(BaseNode currentNode, BaseNode neighbourNode)
+    {
+        return currentNode.Position.x - neighbourNode.Position.x != 0 && currentNode.Position.y - neighbourNode.Position.y != 0;
+        // return Mathf.Abs(currentNode.Position.x - neighbourNode.Position.x) == 1
+        // && Mathf.Abs(currentNode.Position.y - neighbourNode.Position.y) == 1;
     }
 
     private void p()
@@ -106,20 +132,59 @@ public class AStarAlgo : INodePathfinder
         Debug.Log($"closedList { closedList.Count}");
     }
 
-    private List<BaseNode> CalculatePath(BaseNode endNode)
+    private List<BaseNode> CalculatePath(BaseNode endNodeLocal)
     {
+        var testBreak = maxHeight * maxWidth;
         List<BaseNode> path = new List<BaseNode>();
-        path.Add(endNode);
-        BaseNode currentNode = endNode;
-        while (currentNode.Parent != null)
+        var currentNode = endNodeLocal;
+        path.Add(currentNode);
+
+        Debug.Log($"EndParent {currentNode.Parent} > {endNodeLocal.Parent}");
+
+        while (currentNode.Parent != null && testBreak-- > 0)
         {
+            Debug.Log(currentNode);
+            Debug.Log(currentNode.Parent);
+            if (!canWalkDiagonaly && AreDiagonalNode(currentNode, currentNode.Parent))
+            {
+                var node = GetWalkableNodeToDiagonaleNode(currentNode, currentNode.Parent);
+                if (node == null)
+                {
+                    Debug.Log("BELAJ");
+                }
+                else
+                {
+                    path.Add(node);
+
+                }
+            }
+
             path.Add(currentNode.Parent);
             currentNode = currentNode.Parent;
         }
+        Debug.Log($"Ukupno parenta { completeMap.Where(c => c.Parent != null).Count() }");
+        var m = completeMap.Where(c => c.Parent != null).ToList();
+        foreach (var mm in m)
+        {
+            Debug.Log($"> {mm} - {mm.Parent}");
+        }
+
         path.Reverse();
         return path;
     }
 
+
+    // private List<BaseNode> GetNeighbourListWithoutDiagonals(BaseNode currentNode)
+    // {
+    //     var neighbourList = new List<BaseNode>();
+    //     foreach (var neighbour in neighbourPositions)
+    //     {
+    //         BaseNode goodNode = GetWalkableNode(currentNode.Position + neighbour);
+    //         if (goodNode != null)
+    //             neighbourList.Add(goodNode);
+    //     }
+    //     return neighbourList;
+    // }
     private List<BaseNode> GetNeighbourList(BaseNode currentNode)
     {
         var neighbourList = new List<BaseNode>();
@@ -127,7 +192,8 @@ public class AStarAlgo : INodePathfinder
         {
             for (int j = -1; j <= 1; j++)
             {
-                BaseNode goodNode = GetNode(currentNode.Position + new Vector2Int(i, j));
+                if (i == 0 && j == 0) continue;
+                BaseNode goodNode = GetWalkableNode(currentNode.Position + new Vector2Int(i, j));
                 if (goodNode != null)
                     neighbourList.Add(goodNode);
             }
@@ -135,12 +201,11 @@ public class AStarAlgo : INodePathfinder
         return neighbourList;
     }
 
-    private BaseNode GetNode(Vector2Int vecId)
-    {
-        // TODO: calculate obstacles
+    private BaseNode GetNode(Vector2Int vecId) => completeMap.Where(n => n.Position.x == vecId.x && n.Position.y == vecId.y).FirstOrDefault();
 
-        // check if allready is in closed list
-        if (closedList.Where(n => n.Position.x == vecId.x && n.Position.y == vecId.y).Count() > 0)
+    private BaseNode GetWalkableNode(Vector2Int vecId)
+    {
+        if (nonWalkablesList.Exists(n => n.Position.x == vecId.x && n.Position.y == vecId.y))
             return null;
 
         // return only valid param

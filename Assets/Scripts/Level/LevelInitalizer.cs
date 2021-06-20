@@ -164,6 +164,6 @@ public class LevelInitalizer
                 }
             }
 
-        GameObject.FindObjectOfType<NodeDebugger>()?.InitalizeMesh(lista.ToArray(), worldPosition.ToArray());
+        GameObject.FindObjectOfType<DebuggerPathfinding>()?.InitalizeMesh(lista.ToArray(), worldPosition.ToArray());
     }
 }

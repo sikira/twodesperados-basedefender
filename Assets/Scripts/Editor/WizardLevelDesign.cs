@@ -47,12 +47,16 @@ namespace BaseDefender.Editor
                 if (GUILayout.Button("Find Path A*"))
                 {
                     aStar = new AStarAlgo();
-                    aStar.Find(new Vector2Int(1, 2), new Vector2Int(10, 9), data);
+                    aStar.Find(new Vector2Int(1, 1), new Vector2Int(8, 8), data);
                 }
 
                 if (GUILayout.Button("Step in Path A*"))
                 {
                     aStar?.FindStep();                    
+                }
+                if (GUILayout.Button("Calculate All A*"))
+                {
+                    aStar?.CalculateAll();                    
                 }
 
             }

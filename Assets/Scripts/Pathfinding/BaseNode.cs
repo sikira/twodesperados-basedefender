@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class BaseNode
 {
     // Vrijednost od pocetka
@@ -35,5 +33,4 @@ public class BaseNode
     public bool Equals(Object right) => false;
 
 
-    
 }
