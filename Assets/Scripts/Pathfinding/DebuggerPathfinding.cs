@@ -4,6 +4,35 @@ using System.Linq;
 using UnityEngine;
 
 
+public class DebuggerColorPaletes
+{
+    private static List<Color> colors = new List<Color>(){
+            Color.cyan , Color.blue , Color.green , Color.red , Color.yellow , Color.white , Color.black , Color.grey , Color.magenta , Color.yellow
+    };
+
+    public static List<DebuggerColorPalete> _palet = null;
+    public static List<DebuggerColorPalete> CreatePalets()
+    {
+        return colors.Select(c => new DebuggerColorPalete()
+        {
+            NeighboursColor = new Color(c.r, c.g, c.b, .25f),
+            PositionColor = new Color(c.r, c.g, c.b, 1f),
+            ValidPathColor = new Color(c.r, c.g, c.b, 1f),
+            OpenListColor = new Color(c.r, c.g, c.b, .75f),
+            ClosedListColor = new Color(c.r, c.g, c.b, .5f)
+        }).ToList();
+    }
+    public static List<DebuggerColorPalete> palet
+    {
+        get
+        {
+            if (_palet == null)
+                _palet = CreatePalets();
+            return _palet;
+        }
+    }
+
+}
 public class DebuggerColorPalete
 {
     public Color NeighboursColor = Color.cyan;
@@ -11,6 +40,7 @@ public class DebuggerColorPalete
     public Color ValidPathColor = Color.magenta;
     public Color OpenListColor = Color.green;
     public Color ClosedListColor = Color.red;
+
 }
 
 public interface IDebuggerPathfinding
@@ -19,6 +49,7 @@ public interface IDebuggerPathfinding
     void DebugSearch(int layerNumber, BaseNode currentNode, List<BaseNode> openList, List<BaseNode> closedList, List<BaseNode> neighbourList);
     void InitalizeMesh(Vector2Int[] mesh, Vector3[] worldPosition);
     void MarkCurrentNode(BaseNode node, int layerNumber, Color color);
+    void Clear(int debugLayerNumber);
 }
 
 public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
@@ -53,7 +84,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
 
     private DebuggerColorPalete GetPalet(int layerNumber)
     {
-        return new DebuggerColorPalete();
+        return DebuggerColorPaletes.palet[layerNumber];
     }
     public void DebugSearch(int layerNumber, BaseNode currentNode, List<BaseNode> openList, List<BaseNode> closedList, List<BaseNode> neighbourList)
     {
@@ -71,9 +102,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
 
     public void DebugPath(int layerNumber, List<BaseNode> path)
     {
-        var allMarked = dic.Where(k => k.Value.GetComponent<DebugerNode>()?.IsLayerActive(layerNumber) == true).Select(k => k.Value.GetComponent<DebugerNode>());
-        foreach (var mark in allMarked)
-            mark.DeactivateMark(layerNumber);
+        Clear(layerNumber);
 
         foreach (var pathNode in path)
             MarkCurrentNode(pathNode, layerNumber, GetPalet(layerNumber).ValidPathColor);
@@ -83,6 +112,13 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
     {
         if (node != null)
             dic[node.Position]?.GetComponent<DebugerNode>()?.SetNode(layerNumber, color);
+    }
+
+    public void Clear(int layerNumber)
+    {
+        var allMarked = dic.Where(k => k.Value.GetComponent<DebugerNode>()?.IsLayerActive(layerNumber) == true).Select(k => k.Value.GetComponent<DebugerNode>());
+        foreach (var mark in allMarked)
+            mark.DeactivateMark(layerNumber);
     }
 
     // internal void MarkNeigbours(List<BaseNode> neighbourList, Color color)

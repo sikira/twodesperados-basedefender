@@ -6,7 +6,7 @@ using UnityEngine;
 public class DebugerNode : MonoBehaviour
 {
     public List<SpriteRenderer> marks = new List<SpriteRenderer>();
-    public List<bool> marksBool = new List<bool>();
+    public List<bool> marksBool;
 
     void OnBecameVisible()
     {
@@ -20,10 +20,8 @@ public class DebugerNode : MonoBehaviour
     public void Dectivate()
     {
         this.gameObject.SetActive(false);
-        marksBool = new List<bool>();
         for (int i = 0; i < marks.Count; i++)
         {
-            marksBool.Add(false);
             DeactivateMark(i);
         }
     }
@@ -42,7 +40,7 @@ public class DebugerNode : MonoBehaviour
 
     public void SetNode(int LayerNumber, Color currentPositionColor)
     {
-        if (LayerNumber > 0 && LayerNumber < marks.Count)
+        if (LayerNumber >= 0 && LayerNumber < marks.Count)
         {
             this.gameObject.SetActive(true);
             marks[LayerNumber].enabled = true;
@@ -53,7 +51,7 @@ public class DebugerNode : MonoBehaviour
 
     internal bool IsLayerActive(int layerNumber)
     {
-        if (layerNumber > 0 && layerNumber < marks.Count)
+        if (layerNumber >= 0 && layerNumber < marks.Count)
             return marksBool[layerNumber];
         return false;
     }

@@ -17,7 +17,7 @@ public class AStarAlgo : INodePathfinder
     BaseNode endNodeMark;
     private List<BaseNode> openList;
     private List<BaseNode> closedList;
-    private List<BaseNode> nonWalkablesList = Enumerable.Range(0, 20).Select(n => new BaseNode(new Vector2Int(n, 4))).ToList();
+    private List<BaseNode> nonWalkablesList = Enumerable.Range(0, 50).Select(n => new BaseNode(new Vector2Int(n, 4))).ToList();
 
     private List<BaseNode> completeMap;
     private bool canWalkDiagonaly = false;
@@ -25,7 +25,7 @@ public class AStarAlgo : INodePathfinder
 
     IDebuggerPathfinding debuger;
 
-    public void Find(Vector2Int startPosition, Vector2Int endPosition, LevelData dataFake, int layer)
+    public void SetUp(Vector2Int startPosition, Vector2Int endPosition, LevelData dataFake, int layer)
     {
         DebugLayerNumber = layer;
         nonWalkablesList.RemoveAt(9);
@@ -47,6 +47,9 @@ public class AStarAlgo : INodePathfinder
         startNode.H = CalculateDistanceCost(startNode, endNodeMark);
 
         openList.Add(startNode);
+
+        Debug.Log("Set UP");
+
     }
 
     public void CalculateAll()
@@ -61,9 +64,9 @@ public class AStarAlgo : INodePathfinder
         if (openList.Count == 0)
         {
             Debug.Log("no open list");
+            debuger?.Clear(DebugLayerNumber);
             return false;
         }
-        // Debug.Log("FindStep");
 
         BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
 
@@ -71,10 +74,9 @@ public class AStarAlgo : INodePathfinder
 
         if (lowestFCostNode == endNodeMark)
         {
-            Debug.Log("Kraj pronadjeno sve!");
+            // Debug.Log("Kraj pronadjeno sve!");
             var path = CalculatePath(lowestFCostNode);
             debuger?.DebugPath(DebugLayerNumber, path);
-
             return true;
         }
 
@@ -122,9 +124,9 @@ public class AStarAlgo : INodePathfinder
     }
     private bool AreDiagonalNode(BaseNode currentNode, BaseNode neighbourNode)
     {
-        return currentNode.Position.x - neighbourNode.Position.x != 0 && currentNode.Position.y - neighbourNode.Position.y != 0;
-        // return Mathf.Abs(currentNode.Position.x - neighbourNode.Position.x) == 1
-        // && Mathf.Abs(currentNode.Position.y - neighbourNode.Position.y) == 1;
+        // return currentNode.Position.x - neighbourNode.Position.x != 0 && currentNode.Position.y - neighbourNode.Position.y != 0;
+        return Mathf.Abs(currentNode.Position.x - neighbourNode.Position.x) == 1
+        && Mathf.Abs(currentNode.Position.y - neighbourNode.Position.y) == 1;
     }
 
     private void p()
@@ -142,35 +144,27 @@ public class AStarAlgo : INodePathfinder
         var currentNode = endNodeLocal;
         path.Add(currentNode);
 
-        Debug.Log($"EndParent {currentNode.Parent} > {endNodeLocal.Parent}");
+        // Debug.Log($"EndParent {currentNode.Parent} > {endNodeLocal.Parent}");
 
         while (currentNode.Parent != null && testBreak-- > 0)
         {
-            Debug.Log(currentNode);
-            Debug.Log(currentNode.Parent);
+            // Debug.Log(currentNode);
+            // Debug.Log(currentNode.Parent);
             if (!canWalkDiagonaly && AreDiagonalNode(currentNode, currentNode.Parent))
             {
                 var node = GetWalkableNodeToDiagonaleNode(currentNode, currentNode.Parent);
-                if (node == null)
-                {
-                    Debug.Log("BELAJ");
-                }
-                else
-                {
-                    path.Add(node);
-
-                }
+                path.Add(node);
             }
 
             path.Add(currentNode.Parent);
             currentNode = currentNode.Parent;
         }
-        Debug.Log($"Ukupno parenta { completeMap.Where(c => c.Parent != null).Count() }");
-        var m = completeMap.Where(c => c.Parent != null).ToList();
-        foreach (var mm in m)
-        {
-            Debug.Log($"> {mm} - {mm.Parent}");
-        }
+        // Debug.Log($"Ukupno parenta { completeMap.Where(c => c.Parent != null).Count() }");
+        // var m = completeMap.Where(c => c.Parent != null).ToList();
+        // foreach (var mm in m)
+        // {
+        //     Debug.Log($"> {mm} - {mm.Parent}");
+        // }
 
         path.Reverse();
         return path;
