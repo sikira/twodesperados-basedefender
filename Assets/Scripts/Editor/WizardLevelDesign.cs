@@ -5,6 +5,7 @@ using UnityEditor;
 using System;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Linq;
 
 namespace BaseDefender.Editor
 {
@@ -12,6 +13,7 @@ namespace BaseDefender.Editor
     public class WizardLevelDesign : ScriptableWizard
     {
         public LevelData data;
+        public LevelInitalizer initalizer;
         private Timer secTimer;
 
 
@@ -26,8 +28,8 @@ namespace BaseDefender.Editor
         }
 
 
-        private AStarAlgo aStar;
-        private AStarAlgo aStar2;
+        private INodePathfinderAlgo aStar;
+        private INodePathfinderAlgo aStar2;
 
         [MenuItem("Base Defender/Level Design")]
         private static void MenuEntryCall()
@@ -51,17 +53,20 @@ namespace BaseDefender.Editor
 
                 if (GUILayout.Button("Create Random Level!"))
                 {
-                    LevelInitalizer initalizer = new LevelInitalizer();
+                    initalizer = new LevelInitalizer();
                     initalizer.Init(data);
                 }
 
                 if (GUILayout.Button("Find Path A*"))
                 {
-                    aStar = new AStarAlgo();
-                    aStar.SetUp(new Vector2Int(1, 1), new Vector2Int(8, 8), data, 3);
+                    var debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
 
-                    aStar2 = new AStarAlgo();
-                    aStar2.SetUp(new Vector2Int(14, 1), new Vector2Int(8, 8), data, 6);
+                    var nonWalkables = initalizer.obstacleListPosition.Select(o => o.Position).ToList();
+                    aStar = PathfindingAlgo.GetAlgo();
+                    aStar.SetUp(new Vector2Int(1, 1), new Vector2Int(8, 8), data, nonWalkables, 3, debuger);
+
+                    aStar2 = PathfindingAlgo.GetAlgo();
+                    aStar2.SetUp(new Vector2Int(14, 1), new Vector2Int(8, 8), data, nonWalkables, 6, debuger);
                 }
 
                 if (GUILayout.Button("Step in Path A*"))
@@ -90,7 +95,7 @@ namespace BaseDefender.Editor
         {
             Debug.Log("timer je");
 
-            if (aStar.FindStep())
+            if (aStar.FindStep() != null)
             {
                 secTimer.Stop();
             }

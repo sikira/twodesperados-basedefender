@@ -17,7 +17,9 @@ public class LevelData
 
     private Nullable<RectInt> _baseArea = null;
     public int NumberOfEnemySpawner = 4;
-
+    public bool CanWalDiagonaly = false;
+    public Vector3Int basePosition;
+    public float ObstaclePercent = 0.50f;
 
 
     public int SizeX
@@ -65,6 +67,5 @@ public class LevelData
             return _baseArea.GetValueOrDefault();
         }
     }
-
 
 }

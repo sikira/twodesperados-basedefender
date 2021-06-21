@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AStarAlgo : INodePathfinder
+public class AStarAlgo : INodePathfinderAlgo
 {
     public int DebugLayerNumber = 0;
     private const int MOVE_STRAIGHT_COST = 10;
@@ -18,23 +18,20 @@ public class AStarAlgo : INodePathfinder
     private List<BaseNode> openList;
     private List<BaseNode> closedList;
     private List<BaseNode> nonWalkablesList = Enumerable.Range(0, 50).Select(n => new BaseNode(new Vector2Int(n, 4))).ToList();
-
     private List<BaseNode> completeMap;
     private bool canWalkDiagonaly = false;
-    private readonly Vector2Int[] neighbourPositions = new Vector2Int[] { new Vector2Int(-1, 0), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(0, 1) };
 
     IDebuggerPathfinding debuger;
 
-    public void SetUp(Vector2Int startPosition, Vector2Int endPosition, LevelData dataFake, int layer)
+    public void SetUp(Vector2Int startPosition, Vector2Int endPosition, LevelData data, List<Vector2Int> nonWalkablePositions, int debugLayer, IDebuggerPathfinding debuggerPathfinding)
     {
-        DebugLayerNumber = layer;
-        nonWalkablesList.RemoveAt(9);
-        nonWalkablesList.Add(new BaseNode(new Vector2Int(9, 4)));
+        DebugLayerNumber = debugLayer;
+        this.nonWalkablesList = nonWalkablePositions.Select(p => new BaseNode(p)).ToList();
 
-
-        debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
-        maxWidth = dataFake.SizeX;
-        maxHeight = dataFake.SizeY;
+        debuger = debuggerPathfinding;
+        maxWidth = data.SizeX;
+        maxHeight = data.SizeY;
+        canWalkDiagonaly = data.CanWalDiagonaly;
 
         openList = new List<BaseNode>();
         closedList = new List<BaseNode>();
@@ -48,24 +45,39 @@ public class AStarAlgo : INodePathfinder
 
         openList.Add(startNode);
 
-        Debug.Log("Set UP");
+        // Debug.Log("Set UP");
 
+    }
+
+    public Vector2Int[] GetPath()
+    {
+        while (openList.Count > 0)
+        {
+            var path = FindStep();
+            if (path != null)
+            {
+                return path.Select(n => n.Position).ToArray();
+            }
+        }
+
+        return null;
+        // return new Vector2Int[] { };
     }
 
     public void CalculateAll()
     {
         while (openList.Count > 0)
-            if (FindStep())
+            if (FindStep() != null)
                 break;
     }
 
-    public bool FindStep()
+    public List<BaseNode> FindStep()
     {
         if (openList.Count == 0)
         {
             Debug.Log("no open list");
             debuger?.Clear(DebugLayerNumber);
-            return false;
+            return null;
         }
 
         BaseNode lowestFCostNode = openList.OrderBy(n => n.F).First();
@@ -77,7 +89,7 @@ public class AStarAlgo : INodePathfinder
             // Debug.Log("Kraj pronadjeno sve!");
             var path = CalculatePath(lowestFCostNode);
             debuger?.DebugPath(DebugLayerNumber, path);
-            return true;
+            return path;
         }
 
         openList.Remove(lowestFCostNode);
@@ -112,7 +124,7 @@ public class AStarAlgo : INodePathfinder
                     openList.Add(neighbourNode);
             }
         }
-        return false;
+        return null;
     }
 
     private BaseNode GetWalkableNodeToDiagonaleNode(BaseNode currentNode, BaseNode neighbourNode)
@@ -224,4 +236,6 @@ public class AStarAlgo : INodePathfinder
         int rest = Mathf.Abs(xDist - yDist);
         return MOVE_DIAGONAL_COST * Mathf.Min(xDist, yDist) + MOVE_STRAIGHT_COST * rest;
     }
+
+
 }
