@@ -19,7 +19,7 @@ namespace BaseDefender.Editor
 
         private void OnEnable()
         {
-            data = new LevelData();
+            data = LevelData.Instance;
             if (secTimer == null)
             {
                 secTimer = new Timer(1000);
@@ -63,10 +63,12 @@ namespace BaseDefender.Editor
 
                     var nonWalkables = initalizer.obstacleListPosition.Select(o => o.Position).ToList();
                     aStar = PathfindingAlgo.GetAlgo();
-                    aStar.SetUp(new Vector2Int(1, 1), new Vector2Int(8, 8), data, nonWalkables, 3, debuger);
+                    aStar.SetUp(new Vector2Int(1, 1), new Vector2Int(8, 8), data.MapArea, nonWalkables);
+                    aStar.SetUpDebugger(debuger, 3);
 
                     aStar2 = PathfindingAlgo.GetAlgo();
-                    aStar2.SetUp(new Vector2Int(14, 1), new Vector2Int(8, 8), data, nonWalkables, 6, debuger);
+                    aStar2.SetUp(new Vector2Int(14, 1), new Vector2Int(8, 8), data.MapArea, nonWalkables);
+                    aStar2.SetUpDebugger(debuger, 6);
                 }
 
                 if (GUILayout.Button("Step in Path A*"))

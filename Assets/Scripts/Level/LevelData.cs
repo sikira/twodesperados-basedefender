@@ -4,8 +4,20 @@ using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 
+[System.Serializable]
 public class LevelData
 {
+    private static LevelData _instance;
+    public static LevelData Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = new LevelData();
+
+            return _instance;
+        }
+    }
     public static readonly string MAIN_GAMEOBJECT_NAME = "MainGameEngine";
 
     private const int minSizeX = 10;
@@ -46,6 +58,8 @@ public class LevelData
             }
         }
     }
+
+    public RectInt MapArea => new RectInt(0, 0, this.SizeX, this.SizeY);
 
     public RectInt BaseArea
     {

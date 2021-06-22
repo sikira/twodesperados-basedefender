@@ -50,6 +50,7 @@ public interface IDebuggerPathfinding
     void InitalizeMesh(Vector2Int[] mesh, Vector3[] worldPosition);
     void MarkCurrentNode(BaseNode node, int layerNumber, Color color);
     void Clear(int debugLayerNumber);
+    int GetId();
 }
 
 public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
@@ -119,6 +120,11 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
         var allMarked = dic.Where(k => k.Value.GetComponent<DebugerNode>()?.IsLayerActive(layerNumber) == true).Select(k => k.Value.GetComponent<DebugerNode>());
         foreach (var mark in allMarked)
             mark.DeactivateMark(layerNumber);
+    }
+
+    public int GetId()
+    {
+        return 0;
     }
 
     // internal void MarkNeigbours(List<BaseNode> neighbourList, Color color)

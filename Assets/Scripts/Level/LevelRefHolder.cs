@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class LevelRefHolder : MonoBehaviour
 {
+    public LevelData levelData;
     public MainPlayer player;
     public PlayerBase playerBase;
     public Camera mainCamera;
@@ -17,7 +18,7 @@ public class LevelRefHolder : MonoBehaviour
     public TileBase ObstacleSample1;
     public TileBase SpawnerTileMap;
 
-    
+
 
     // public Dictionary<> CompleteLevelNodes;
 }

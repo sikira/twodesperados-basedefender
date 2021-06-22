@@ -4,9 +4,11 @@ using UnityEngine;
 
 public interface INodePathfinderAlgo
 {
+    bool canWalkDiagonaly { get; set; }
     void CalculateAll();
     List<BaseNode> FindStep();
-    void SetUp(Vector2Int startPosition, Vector2Int endPosition, LevelData data, List<Vector2Int> nonWalkablePositions, int debugLayer, IDebuggerPathfinding debuggerPathfinding);
+    void SetUp(Vector2Int startPosition, Vector2Int endPosition, RectInt map, List<Vector2Int> nonWalkablePositions);
+    void SetUpDebugger(IDebuggerPathfinding debuggerPathfinding, int debugerLayer);
     Vector2Int[] GetPath();
 }
 

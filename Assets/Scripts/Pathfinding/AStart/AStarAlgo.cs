@@ -19,23 +19,23 @@ public class AStarAlgo : INodePathfinderAlgo
     private List<BaseNode> closedList;
     private List<BaseNode> nonWalkablesList = Enumerable.Range(0, 50).Select(n => new BaseNode(new Vector2Int(n, 4))).ToList();
     private List<BaseNode> completeMap;
-    private bool canWalkDiagonaly = false;
-
     IDebuggerPathfinding debuger;
-
-    public void SetUp(Vector2Int startPosition, Vector2Int endPosition, LevelData data, List<Vector2Int> nonWalkablePositions, int debugLayer, IDebuggerPathfinding debuggerPathfinding)
+    public bool canWalkDiagonaly { get; set; } = false;
+    public void SetUpDebugger(IDebuggerPathfinding debuggerPathfinding, int debugerLayer = -1)
     {
-        DebugLayerNumber = debugLayer;
-        this.nonWalkablesList = nonWalkablePositions.Select(p => new BaseNode(p)).ToList();
-
         debuger = debuggerPathfinding;
-        maxWidth = data.SizeX;
-        maxHeight = data.SizeY;
-        canWalkDiagonaly = data.CanWalDiagonaly;
+        DebugLayerNumber = debugerLayer == -1 ? debuger.GetId() : debugerLayer;
+    }
+    public void SetUp(Vector2Int startPosition, Vector2Int endPosition, RectInt map, List<Vector2Int> nonWalkablePositions)
+    {
 
+        maxWidth = map.width;
+        maxHeight = map.height;
+
+        completeMap = CompleteMesh();
         openList = new List<BaseNode>();
         closedList = new List<BaseNode>();
-        completeMap = CompleteMesh();
+        nonWalkablesList = nonWalkablePositions.Select(p => new BaseNode(p)).ToList();
 
         endNodeMark = GetNode(endPosition);
 

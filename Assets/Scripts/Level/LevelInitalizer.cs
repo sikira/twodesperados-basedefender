@@ -114,7 +114,7 @@ public class LevelInitalizer
         foreach (var enemySpawnPosition in spawnListPositions)
         {
             INodePathfinderAlgo algo = PathfindingAlgo.GetAlgo();
-            algo.SetUp((Vector2Int)enemySpawnPosition, (Vector2Int)levelData.basePosition, levelData, nonWalkable, 0, null);
+            algo.SetUp((Vector2Int)enemySpawnPosition, (Vector2Int)levelData.basePosition, levelData.MapArea, nonWalkable);
             var path = algo.GetPath();
             if (path == null)
                 return false;
@@ -144,7 +144,7 @@ public class LevelInitalizer
                 posibleSpawnListPositions.RemoveAt(pos);
                 try
                 {
-                    posibleSpawnListPositions.RemoveAt(pos-1);
+                    posibleSpawnListPositions.RemoveAt(pos - 1);
                     posibleSpawnListPositions.RemoveAt(pos);
                 }
                 catch { }
@@ -153,7 +153,8 @@ public class LevelInitalizer
         foreach (var pos in spawnListPositions)
             levelRef.EnemyTileMap.SetTile(pos, levelRef.SpawnerTileMap);
 
-        levelRef.enemySpawner.SetSpawnerPositions(spawnListPositions.ToList());
+        // levelRef.enemySpawner.SetSpawnerPositions(spawnListPositions.ToList());
+        GameObject.FindObjectOfType<EnemySpawner>()?.SetSpawnerPositions(spawnListPositions.ToList());
 
         // **** Solution 2  ****//
         // while (spawnListPosition.Count() > levelData.NumberOfEnemySpawner)
