@@ -21,6 +21,11 @@ public class UiControl : MonoBehaviour
     }
 
     // Update is called once per frame
+    // internal void LevelPassed()
+    // {
+    //     Time.timeScale = .05f;
+    //     succes.enabled = true;
+    // }
 
 
     internal void GameOver()
@@ -45,7 +50,16 @@ public class UiControl : MonoBehaviour
     }
     public void GoToNextLevel()
     {
+        var num  = int.Parse(GameObject.FindObjectOfType<PlayerSettings>().currentLevel);
+        num++;
+        GameObject.FindObjectOfType<PlayerSettings>().currentLevel = num.ToString();
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
 }

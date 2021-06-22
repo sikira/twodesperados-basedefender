@@ -10,8 +10,6 @@ public class LevelRandomCreater : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        Debug.Log("Awake");
-
         pref = this.gameObject.GetComponent<PlayerSettings>();
 
         var newData = new LevelData();
@@ -20,6 +18,7 @@ public class LevelRandomCreater : MonoBehaviour
             newData.SizeX = int.Parse(pref.gridX);
             newData.SizeY = int.Parse(pref.gridY);
             newData.ObstacleNumber = int.Parse(pref.gridY);
+            newData.CurrentLevel = int.Parse(pref.currentLevel);
         }
         catch (Exception e)
         {
@@ -27,6 +26,7 @@ public class LevelRandomCreater : MonoBehaviour
         }
 
         DebuggerGlobalSettings.UseDebugger = pref.DebuggerOn;
+        newData.NumberOfEnemySpawner = 3 + Mathf.FloorToInt(LevelData.Instance.CurrentLevel / 3);
 
         var initalizer = new LevelInitalizer();
         initalizer.Init(newData);

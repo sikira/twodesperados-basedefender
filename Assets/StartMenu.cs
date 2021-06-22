@@ -18,6 +18,7 @@ public class StartMenu : MonoBehaviour
     public TMP_InputField sizeX;
     public TMP_InputField sizeY;
     public TMP_InputField num;
+    public TextMeshProUGUI level;
 
     void Start()
     {
@@ -32,6 +33,7 @@ public class StartMenu : MonoBehaviour
         sizeX.text = mainSettings.gridX;
         sizeY.text = mainSettings.gridY;
         num.text = mainSettings.numOfObstacles;
+        level.text = "Level " + mainSettings.currentLevel;
     }
 
     public void LoadNextLevel()

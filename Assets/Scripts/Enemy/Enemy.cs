@@ -73,8 +73,7 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
         _health = enemyHealth;
         startHealth = enemyHealth;
         GetComponent<BoxCollider2D>().enabled = true;
-        alive = true;
-        controls.walking = true;
+        alive = true;        
         this.gameObject.SetActive(true);
     }
 
@@ -128,7 +127,7 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
     {
         if (debuging)
             return;
-            
+
         Health -= power;
 
         healthBar?.SetPercent(Health, startHealth);

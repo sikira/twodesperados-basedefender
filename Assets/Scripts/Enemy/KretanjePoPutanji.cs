@@ -93,4 +93,10 @@ public class KretanjePoPutanji : MonoBehaviour
     {
         walking = false;
     }
+
+    public void ClearMe()
+    {
+        currentPath = new List<Vector2Int>();
+        nextPosition = this.transform.position;
+    }
 }

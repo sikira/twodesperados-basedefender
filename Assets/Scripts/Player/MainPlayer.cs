@@ -83,7 +83,6 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
     {
         if (settings.currentHitRate > settings.HitRate)
         {
-            Debug.Log("Make attack");
             settings.currentHitRate = 0;
             attackTarget?.HitMe(settings.hittingPower);
         }

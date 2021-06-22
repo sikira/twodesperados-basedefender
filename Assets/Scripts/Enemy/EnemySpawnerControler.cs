@@ -24,6 +24,11 @@ public class EnemySpawnerControler : MonoBehaviour
     public Transform enemyPrefab1;
     public Transform enemyPrefab2;
     private SpawnState spawnState = SpawnState.COUNTING;
+    private List<Transform> enemiesPool = new List<Transform>();
+
+    System.Random r = new System.Random();
+    bool allEnemiesKilled = false;
+    private float checkTime = 2f;
 
     void Start()
     {
@@ -32,11 +37,24 @@ public class EnemySpawnerControler : MonoBehaviour
 
     void Update()
     {
+        if (allEnemiesKilled)
+            return;
+
         if (spawnState == SpawnState.WAITTING)
         {
             // KO. Finish them all 
+            checkTime -= Time.deltaTime;
+            if (checkTime <= 0)
+            {
+                checkTime = 2f;
+                var allEnemiesKilled = enemiesPool.Where(e => e.GetComponent<Enemy>()?.alive == true).Count() == 0;
 
+                if (allEnemiesKilled)
+                {
+                    GameObject.FindObjectOfType<UiControl>()?.PlayerWon();
 
+                }
+            }
             return;
         }
 
@@ -45,8 +63,11 @@ public class EnemySpawnerControler : MonoBehaviour
             if (spawnState != SpawnState.SPAWWING)
             {
                 // Debug.Log("EnemySpawner:Pocni izbacivati");
-                StartCoroutine(SpawnWave(new SpawnWave()));
 
+                var wave = new SpawnWave();
+                wave.count += LevelData.Instance.CurrentLevel;
+
+                StartCoroutine(SpawnWave(wave));
             }
         }
         else
@@ -80,29 +101,46 @@ public class EnemySpawnerControler : MonoBehaviour
 
     void SpawnEnemy()
     {
+
         // Debug.Log($"EnemySpawner:SpawnEnemy {spawnersList.Count} - {System.DateTime.Now}");
         foreach (var pos in spawnersList)
         {
             var startPosition = EnemyTilemap.GetCellCenterWorld(pos.TilePositon);
-            var enemy = GetEnemyInstance(enemyPrefab1, this.gameObject.transform, this.gameObject.transform.rotation, startPosition);
+
+            var enemy = GetEnemyInstance(this.gameObject.transform, this.gameObject.transform.rotation, startPosition);
 
             var sprite = enemy.GetComponent<SpriteRenderer>();
             sprite.sortingOrder = 22;
 
-            //TODO: add enemy starting targer and path from spawn            
+            //TODO: Add Enemy Precalculated Path From Spawn Element            
             // Enemy enemyInfo = enemy.GetComponent<Enemy>();   
 
-            // enemy.GetComponent<Enemy>().ReStartMe(new AttackSettings(), 100);
+            var atSet = new AttackSettings();
+            atSet.hittingPower += (LevelData.Instance.CurrentLevel * 2);
+            var health = 50 + (LevelData.Instance.CurrentLevel * 5);
+            enemy.GetComponent<Enemy>()?.ReStartMe(atSet, health);
 
             var controls = enemy.GetComponent<KretanjePoPutanji>();
+            controls.ClearMe();
+            controls.walking = true;
             controls.CurrentTilePosition = (Vector2Int)pos.TilePositon;
             controls.tmap = EnemyTilemap;
         }
     }
 
-    private Transform GetEnemyInstance(Transform prefab, Transform mparent, Quaternion mrotation, Vector3 mposition)
+    private Transform GetEnemyInstance(Transform mparent, Quaternion mrotation, Vector3 mposition)
     {
-        return Instantiate(prefab, parent: mparent, rotation: mrotation, position: mposition);
+        var poolEnemy = enemiesPool.Where(e => e.GetComponent<Enemy>()?.alive == false).FirstOrDefault();
+        if (poolEnemy != null)
+        {
+            Debug.Log("izvlaci iz pool-a");
+            poolEnemy.transform.position = mposition;
+            return poolEnemy;
+        }
+
+        var enemy = Instantiate(r.Next(0, 10) < 7 ? enemyPrefab1 : enemyPrefab2, parent: mparent, rotation: mrotation, position: mposition);
+        enemiesPool.Add(enemy);
+        return enemy;
     }
 
     IEnumerator SpawnWave(SpawnWave wave)
@@ -126,7 +164,7 @@ public class EnemySpawnerControler : MonoBehaviour
 
 public class SpawnWave
 {
-    public int count = 4;
+    public int count = 3;
     public float delay = 12f;
 
 }

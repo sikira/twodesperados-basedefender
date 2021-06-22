@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerBase : MonoBehaviour, IHittableObject
 {
-    private int _health = 50;
+    private int _health = 150;
     public int Health => _health;
 
     public void HealMe(int power)

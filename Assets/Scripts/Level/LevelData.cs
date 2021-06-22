@@ -32,6 +32,7 @@ public class LevelData
     public bool CanWalDiagonaly = false;
     public Vector3Int basePosition;
     private int obstacleNumber = 15;
+    internal int CurrentLevel = 1;
 
     public int ObstacleNumber
     {
