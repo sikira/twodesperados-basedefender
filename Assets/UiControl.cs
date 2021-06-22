@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,6 +11,7 @@ public class UiControl : MonoBehaviour
 
     public Canvas succes;
     public Canvas fail;
+    public TextMeshProUGUI failText;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,10 +30,11 @@ public class UiControl : MonoBehaviour
     // }
 
 
-    internal void GameOver()
+    internal void GameOver(string v = "")
     {
         Time.timeScale = .05f;
         fail.enabled = true;
+        failText.text = v;
     }
     internal void PlayerWon()
     {
@@ -50,7 +53,7 @@ public class UiControl : MonoBehaviour
     }
     public void GoToNextLevel()
     {
-        var num  = int.Parse(GameObject.FindObjectOfType<PlayerSettings>().currentLevel);
+        var num = int.Parse(GameObject.FindObjectOfType<PlayerSettings>().currentLevel);
         num++;
         GameObject.FindObjectOfType<PlayerSettings>().currentLevel = num.ToString();
 

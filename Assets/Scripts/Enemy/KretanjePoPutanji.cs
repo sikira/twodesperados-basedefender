@@ -97,6 +97,6 @@ public class KretanjePoPutanji : MonoBehaviour
     public void ClearMe()
     {
         currentPath = new List<Vector2Int>();
-        nextPosition = this.transform.position;
+        // nextPosition = this.transform.position;
     }
 }

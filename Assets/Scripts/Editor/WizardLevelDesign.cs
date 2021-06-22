@@ -29,7 +29,7 @@ namespace BaseDefender.Editor
 
 
         private INodePathfinderAlgo aStar;
-        private INodePathfinderAlgo aStar2;
+        // private INodePathfinderAlgo aStar2;
 
         [MenuItem("Base Defender/Level Design")]
         private static void MenuEntryCall()
@@ -79,7 +79,7 @@ namespace BaseDefender.Editor
                 if (GUILayout.Button("Step in Path A*"))
                 {
                     aStar?.FindStep();
-                    aStar2?.FindStep();
+                    // aStar2?.FindStep();
                 }
 
                 EditorGUILayout.BeginHorizontal();

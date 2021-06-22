@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 
 public class AttackSettings
 {
-    public int hittingPower = 5;
+    public int hittingPower = 4;
     public float HitRate = 1.25f;
     public float currentHitRate = 1f;
 
@@ -42,6 +42,12 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
 
     void Start()
     {
+        SetMeUp();
+
+    }
+
+    private void SetMeUp()
+    {
         tMap = GameObject.FindObjectOfType<LevelRefHolder>()?.EnemyTileMap;
         bloodTile = GameObject.FindObjectOfType<LevelRefHolder>()?.BloodTileSampe1;
 
@@ -64,17 +70,18 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
         {
             pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
         }
-
     }
 
     public void ReStartMe(AttackSettings settings, int enemyHealth)
     {
+        SetMeUp();
         this.settings = settings;
         _health = enemyHealth;
         startHealth = enemyHealth;
         GetComponent<BoxCollider2D>().enabled = true;
-        alive = true;        
+        alive = true;
         this.gameObject.SetActive(true);
+        chasingTarget = null;
     }
 
     private void OnPshycsMapChangeUpdate()
@@ -144,6 +151,7 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
     {
         alive = false;
         controls.Stop();
+        chasingTarget = null;
 
         GetComponent<BoxCollider2D>().enabled = false;
         this.gameObject.SetActive(false);

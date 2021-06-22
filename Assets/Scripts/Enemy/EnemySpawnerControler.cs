@@ -116,13 +116,14 @@ public class EnemySpawnerControler : MonoBehaviour
             // Enemy enemyInfo = enemy.GetComponent<Enemy>();   
 
             var atSet = new AttackSettings();
-            atSet.hittingPower += (LevelData.Instance.CurrentLevel * 2);
-            var health = 50 + (LevelData.Instance.CurrentLevel * 5);
+            atSet.hittingPower += (LevelData.Instance.CurrentLevel * 1);
+            var health = 50 + (LevelData.Instance.CurrentLevel * 2);
             enemy.GetComponent<Enemy>()?.ReStartMe(atSet, health);
 
             var controls = enemy.GetComponent<KretanjePoPutanji>();
             controls.ClearMe();
             controls.walking = true;
+            controls.speed = controls.WALK_SPEED;
             controls.CurrentTilePosition = (Vector2Int)pos.TilePositon;
             controls.tmap = EnemyTilemap;
         }

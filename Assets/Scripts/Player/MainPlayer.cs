@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
@@ -24,10 +25,20 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
     public HealtBar healtBar;
     private int startHealth = 100;
 
+    private int fingerId = -1;
+    private Vector2 startPosition;
+
     void Start()
     {
         controls = this.GetComponent<MovementControls>();
     }
+
+    public void ControlerMoveStarted()
+    {
+
+    }
+
+
     void Update()
     {
         horizontalMove = Input.GetAxis("Horizontal") * speed;
@@ -39,6 +50,49 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
             MakeAttack();
         }
 
+        if (Input.touchCount > 0)
+        {
+            // var touch = Input.touches.Where(t => t.phase == TouchPhase.Began).FirstOrDefault();
+
+            foreach (var touch in Input.touches)
+            {
+
+
+                if (touch.phase == TouchPhase.Began && touch.position.x > 0 && touch.position.y > 0
+                && touch.position.x < 300 && touch.position.y < 300 && fingerId < 0)
+                {
+                    fingerId = touch.fingerId;
+                    startPosition = touch.position;
+
+                }
+                else if (touch.phase == TouchPhase.Ended && touch.fingerId == fingerId)
+                {
+                    fingerId = -1;
+                }
+                else if (touch.fingerId == fingerId)
+                {
+                    var dist = Vector2.Distance(startPosition, touch.position);
+
+                    if (dist > 15f || touch.deltaPosition.magnitude > 5)
+                    {
+                        var resVec = touch.position - startPosition;
+                        var horSirX = resVec.x < 0 ? -1 : resVec.x > 0 ? 1 : 0;
+                        var horSirY = resVec.y < 0 ? -1 : resVec.y > 0 ? 1 : 0;
+                        // var horSirX = touch.deltaPosition.x < 0 ? -1 : touch.deltaPosition.x > 0 ? 1 : 0;
+                        // var horSirY = touch.deltaPosition.y < 0 ? -1 : touch.deltaPosition.y > 0 ? 1 : 0;
+                        horizontalMove = horSirX * speed * .75f;
+                        verticalMove = horSirY * speed * .75f;
+                    }
+                }
+
+                // Debug.Log($"Touch: x:{touch.position.x} , y:{touch.position.y} , id:{touch.fingerId },    ");
+            }
+
+        }
+        else
+        {
+            fingerId = -1;
+        }
     }
 
 
@@ -57,7 +111,7 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
         {
             Killed();
         }
-        healtBar?.SetPercent(Health,startHealth);
+        healtBar?.SetPercent(Health, startHealth);
         // Debug.Log($"Auuuuch {Health} -  {alive}");
     }
 
@@ -67,7 +121,7 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
         controls.Stop();
         GetComponent<CircleCollider2D>().enabled = false;
 
-        GameObject.FindObjectOfType<UiControl>()?.GameOver();
+        GameObject.FindObjectOfType<UiControl>()?.GameOver("Player died");
     }
 
     public void HealMe(int power)
@@ -76,10 +130,11 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
         if (Health > 100)
             Health = 100;
 
-        healtBar?.SetPercent(Health , startHealth);
+        healtBar?.SetPercent(Health, startHealth);
     }
 
-    private void MakeAttack()
+
+    public void MakeAttack()
     {
         if (settings.currentHitRate > settings.HitRate)
         {

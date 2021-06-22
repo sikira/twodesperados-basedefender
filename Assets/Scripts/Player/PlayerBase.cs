@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerBase : MonoBehaviour, IHittableObject
 {
+    public HealtBar healtBar;
     private int _health = 150;
     public int Health => _health;
 
@@ -20,12 +21,13 @@ public class PlayerBase : MonoBehaviour, IHittableObject
         {
             GameOver();
         }
+        healtBar?.SetPercent(Health, 150);
     }
 
     private void GameOver()
     {
         DestroyMe();
-        GameObject.FindObjectOfType<UiControl>()?.GameOver();
+        GameObject.FindObjectOfType<UiControl>()?.GameOver("Base destroyed");
     }
 
     private void DestroyMe()
