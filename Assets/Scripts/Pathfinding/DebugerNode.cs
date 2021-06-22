@@ -11,11 +11,15 @@ public class DebugerNode : MonoBehaviour
 
     void OnBecameVisible()
     {
-        Dectivate();
+        // Dectivate();
     }
     public void OnEnable()
     {
-        Dectivate();
+        // Dectivate();
+    }
+    public void OnStart()
+    {
+
     }
 
     public void Dectivate()
@@ -41,8 +45,10 @@ public class DebugerNode : MonoBehaviour
 
     public void SetNode(int LayerNumber, Color currentPositionColor)
     {
+        // Debug.Log($"Set node {LayerNumber}");
         if (LayerNumber >= 0 && LayerNumber < marks.Count)
         {
+            // Debug.Log($"Set node {LayerNumber} {marks.Count} ");
             this.gameObject.SetActive(true);
             marks[LayerNumber].enabled = true;
             marks[LayerNumber].color = currentPositionColor;

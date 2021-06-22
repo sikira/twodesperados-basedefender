@@ -119,7 +119,7 @@ public class EnemySpawnerControler : MonoBehaviour
 
 public class SpawnWave
 {
-    public int count = 1;
-    public float delay = 5f;
+    public int count = 4;
+    public float delay = 12f;
 
 }

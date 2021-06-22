@@ -21,7 +21,7 @@ public class KretanjePoPutanji : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = this.GetComponent<Rigidbody2D>();
+        // rb = this.GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -34,7 +34,7 @@ public class KretanjePoPutanji : MonoBehaviour
         if (!walking)
             return;
 
-        var distance = Vector3.Distance(nextPosition, rb.position);
+        var distance = Vector3.Distance(nextPosition, this.transform.position);
 
         if (distance < .05f)
         {

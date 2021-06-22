@@ -54,6 +54,11 @@ public interface IDebuggerPathfinding
     int GetId();
 }
 
+public class DebuggerGlobalSettings
+{
+    public static bool UseDebugger = true;
+}
+
 public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
 {
     private string nodeHolderName = "NodeHolder";
@@ -105,7 +110,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
     }
     public void DebugSearch(int layerNumber, BaseNode currentNode, List<BaseNode> openList, List<BaseNode> closedList, List<BaseNode> neighbourList)
     {
-        Debug.Log($"Debug Search {currentNode} - {openList.Count} - {closedList.Count} - {neighbourList.Count}");
+        // Debug.Log($"Debug Search {currentNode} - {openList.Count} - {closedList.Count} - {neighbourList.Count}");
         foreach (var node in neighbourList)
             MarkCurrentNode(node, layerNumber, GetPalet(layerNumber).NeighboursColor);
 
@@ -130,7 +135,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
     {
         try
         {
-            Debug.Log($"MarkNode: {node} - {node?.Position} ");
+            // Debug.Log($"MarkNode: {node} - {node?.Position} ");
             if (node != null)
                 dic[node.Position]?.GetComponent<DebugerNode>()?.SetNode(layerNumber, color);
         }
@@ -151,7 +156,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
     private static int _id = -1;
     public int GetId()
     {
-        return (_id++) / DebuggerColorPaletes.colors.Count;
+        return (_id++) % DebuggerColorPaletes.colors.Count;
     }
 
     // internal void MarkNeigbours(List<BaseNode> neighbourList, Color color)

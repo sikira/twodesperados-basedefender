@@ -29,7 +29,6 @@ public class AStarAlgo : INodePathfinderAlgo
 
     public void SetUp(Vector2Int startPosition, Vector2Int endPosition, RectInt map, List<Vector2Int> nonWalkablePositions)
     {
-
         maxWidth = map.width;
         maxHeight = map.height;
 
@@ -74,7 +73,7 @@ public class AStarAlgo : INodePathfinderAlgo
 
     public List<BaseNode> FindStep()
     {
-        Debug.Log("AStart: FindStep: " + DateTime.Now);
+        // Debug.Log("AStart: FindStep: " + DateTime.Now);
         if (debuger == null)
             Debug.Log("no debugger");
 
@@ -82,7 +81,7 @@ public class AStarAlgo : INodePathfinderAlgo
         if (openList.Count == 0)
         {
             Debug.Log("no open list");
-            debuger?.Clear(DebugLayerNumber);
+            CleanDebugger();
             return null;
         }
 
@@ -243,5 +242,8 @@ public class AStarAlgo : INodePathfinderAlgo
         return MOVE_DIAGONAL_COST * Mathf.Min(xDist, yDist) + MOVE_STRAIGHT_COST * rest;
     }
 
-
+    public void CleanDebugger()
+    {
+        debuger?.Clear(DebugLayerNumber);
+    }
 }
