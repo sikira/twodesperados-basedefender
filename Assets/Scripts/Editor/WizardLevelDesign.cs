@@ -54,6 +54,7 @@ namespace BaseDefender.Editor
                 if (GUILayout.Button("Create Random Level!"))
                 {
                     initalizer = new LevelInitalizer();
+                    
                     initalizer.Init(data);
                 }
 
@@ -61,7 +62,7 @@ namespace BaseDefender.Editor
                 {
                     var debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
 
-                    var nonWalkables = initalizer.obstacleListPosition.Select(o => o.Position).ToList();
+                    var nonWalkables = initalizer.pMonitor.obstacleListPosition.Select(o => o.Position).ToList();
                     aStar = PathfindingAlgo.GetAlgo();
                     aStar.SetUp(new Vector2Int(1, 1), new Vector2Int(8, 8), data.MapArea, nonWalkables);
                     aStar.SetUpDebugger(debuger, 3);

@@ -66,7 +66,7 @@ public class EnemySpawnerControler : MonoBehaviour
         foreach (var positons in positions)
         {
             var startPosition = EnemyTilemap.GetCellCenterWorld(positons);
-            var spawn = Instantiate(enemyPrefab1, parent: this.gameObject.transform, rotation: this.gameObject.transform.rotation, position: startPosition);
+            var spawn = Instantiate(spawnPrefab, parent: this.gameObject.transform, rotation: this.gameObject.transform.rotation, position: startPosition);
 
             var spawnCom = spawn.GetComponent<Spawner>();
             spawnCom.TilePositon = positons;
@@ -93,8 +93,8 @@ public class EnemySpawnerControler : MonoBehaviour
             // Enemy enemyInfo = enemy.GetComponent<Enemy>();           
 
             var controls = enemy.GetComponent<KretanjePoPutanji>();
+            controls.CurrentTilePosition = (Vector2Int)pos.TilePositon;
             controls.tmap = EnemyTilemap;
-
 
         }
     }

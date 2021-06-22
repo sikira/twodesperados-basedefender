@@ -15,7 +15,7 @@ public class Spawner : MonoBehaviour
         pathfinderAlgo = PathfindingAlgo.GetAlgo();
 
         var debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
-        pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
+        // pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
 
         PhysicsMonitor pshycs2 = GameObject.FindObjectOfType<PhysicsMonitor>();
         pathfinderAlgo.SetUp((Vector2Int)TilePositon, pshycs2.endPosition, pshycs2.map, pshycs2.nonWalkablePositions);

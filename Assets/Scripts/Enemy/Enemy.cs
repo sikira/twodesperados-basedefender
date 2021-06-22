@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,16 +16,27 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
-        controls = this.gameObject.GetComponent<KretanjePoPutanji>();
         pathfinderAlgo = PathfindingAlgo.GetAlgo();
 
-        var debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
-        pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
+        controls = this.gameObject.GetComponent<KretanjePoPutanji>();
 
+        var debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
+        // pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
+
+        OnPshycsUpdate();
+    }
+
+    private void OnPshycsUpdate()
+    {
         physicsMonitor = GameObject.FindObjectOfType<PhysicsMonitor>();
         endPosition = physicsMonitor.endPosition;
-        
+
+
+        pathfinderAlgo.SetUp(controls.CurrentTilePosition, physicsMonitor.endPosition, physicsMonitor.map, physicsMonitor.nonWalkablePositions);
+
     }
+
+
 
 
     // Update is called once per frame
@@ -37,7 +49,7 @@ public class Enemy : MonoBehaviour
             currentTarget = nextCurrentTarget;
             currentPath = pathfinderAlgo.GetPath().ToList();
             controls.UpdatePath(currentPath);
-            
+
         }
 
 

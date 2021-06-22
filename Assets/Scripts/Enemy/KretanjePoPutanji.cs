@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class KretanjePoPutanji : MonoBehaviour
 {
+    public Vector2Int CurrentTilePosition;
     private Rigidbody2D rb;
     private Vector3 velocity = Vector3.zero;
     [Range(0, .3f)] [SerializeField] private float smoothTime = .02f;//.05f;
@@ -76,8 +77,8 @@ public class KretanjePoPutanji : MonoBehaviour
 
     private void getNextWayPoint()
     {
-        var tilePos = currentPath[0];
-        nextPosition = tmap.CellToWorld((Vector3Int)tilePos);
+        CurrentTilePosition = currentPath[0];
+        nextPosition = tmap.CellToWorld((Vector3Int)CurrentTilePosition);
         currentPath.RemoveAt(0);
         walking = true;
     }

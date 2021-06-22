@@ -14,12 +14,10 @@ public class LevelInitalizer
     private static int LastSizeX = 0;
     private static int LastSizeY = 0;
 
-
     private List<Vector3Int> spawnListPositions = new List<Vector3Int>();
     private List<Vector3Int> posibleSpawnListPositions = new List<Vector3Int>();
-    public List<BaseObstacle> obstacleListPosition = new List<BaseObstacle>();
-
     public List<Vector3Int> freeSpaceOutsidePlayerBase = new List<Vector3Int>();
+    public PhysicsMonitor pMonitor;
 
     void Awake()
     {
@@ -32,6 +30,8 @@ public class LevelInitalizer
         levelRef = GameObject.FindObjectOfType<LevelRefHolder>();
         if (levelRef.enemySpawner == null)
             levelRef.enemySpawner = GameObject.FindObjectOfType<EnemySpawnerControler>();
+
+        pMonitor = GameObject.FindObjectOfType<PhysicsMonitor>();
 
         InitLevel();
     }
@@ -73,6 +73,10 @@ public class LevelInitalizer
         }
         posibleSpawnListPositions = new List<Vector3Int>();
 
+        var allSpawners = GameObject.FindObjectsOfType<Spawner>();
+        foreach (var spaw in allSpawners)
+            GameObject.DestroyImmediate(spaw.gameObject);
+
     }
 
     private void InitalizeObstaclesAndDestObstables()
@@ -92,7 +96,7 @@ public class LevelInitalizer
             var pos = freeSpaceOutsidePlayerBase[nextPos];
             freeSpaceOutsidePlayerBase.RemoveAt(nextPos);
 
-            var newPhicyMap = obstacleListPosition.Select(o => (Vector2Int)o.Position).ToList();
+            var newPhicyMap = pMonitor.obstacleListPosition.Select(o => (Vector2Int)o.Position).ToList();
             newPhicyMap.Add((Vector2Int)pos);
             // Debug.Log("Preracunaj");
             if (CanAllEnemiesWalkToBase(newPhicyMap))
@@ -100,7 +104,7 @@ public class LevelInitalizer
                 // Debug.Log("Ubaci");
                 // add valid opstacle
                 levelRef.ObstacleTileMap.SetTile(pos, levelRef.ObstacleSample1);
-                obstacleListPosition.Add(new BaseObstacle((Vector2Int)pos));
+                pMonitor.obstacleListPosition.Add(new BaseObstacle((Vector2Int)pos));
             }
             // else
             // {
@@ -202,7 +206,8 @@ public class LevelInitalizer
             levelData.basePosition = getRandomVector3();
 
         // setting base position
-        levelRef.playerBase.transform.position = levelRef.FloorTileMap.GetCellCenterWorld(levelData.basePosition); ;
+        levelRef.playerBase.transform.position = levelRef.FloorTileMap.GetCellCenterWorld(levelData.basePosition);
+        pMonitor.endPosition = (Vector2Int)levelData.basePosition;
 
         var middleVector = Vector3.Lerp(levelRef.player.transform.position, levelRef.playerBase.transform.position, .5f);
         levelRef.mainCamera.transform.position = middleVector + new Vector3(0, 0, -10);
@@ -228,7 +233,7 @@ public class LevelInitalizer
 
                     // creating outside wall
                     levelRef.ObstacleTileMap.SetTile(new Vector3Int(i, j, 0), levelRef.ObstacleSample1);
-                    obstacleListPosition.Add(new BaseObstacle(new Vector2Int(i, j)));
+                    pMonitor.obstacleListPosition.Add(new BaseObstacle(new Vector2Int(i, j)));
                 }
                 else
                 {
@@ -241,6 +246,7 @@ public class LevelInitalizer
                 }
             }
 
+        pMonitor.map = new RectInt(0, 0, levelData.SizeX, levelData.SizeY);
         GameObject.FindObjectOfType<DebuggerPathfinding>()?.InitalizeMesh(lista.ToArray(), worldPosition.ToArray());
     }
 }
