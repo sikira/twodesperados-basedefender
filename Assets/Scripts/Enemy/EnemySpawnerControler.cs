@@ -20,6 +20,7 @@ public class EnemySpawnerControler : MonoBehaviour
 
     private float timeBetweenWaves = 2f;
     private float waveCountdown = 0;
+    public Transform spawnPrefab;
     public Transform enemyPrefab1;
     public Transform enemyPrefab2;
     private SpawnState spawnState = SpawnState.COUNTING;
@@ -60,11 +61,16 @@ public class EnemySpawnerControler : MonoBehaviour
         return false;
     }
 
-    public void SetSpawnerPositions(List<Vector3Int> newPositons)
+    public void SetSpawnerPositions(List<Vector3Int> positions)
     {
-        foreach (var spawnerPod in spawnersList)
+        foreach (var positons in positions)
         {
+            var startPosition = EnemyTilemap.GetCellCenterWorld(positons);
+            var spawn = Instantiate(enemyPrefab1, parent: this.gameObject.transform, rotation: this.gameObject.transform.rotation, position: startPosition);
 
+            var spawnCom = spawn.GetComponent<Spawner>();
+            spawnCom.TilePositon = positons;
+            spawnersList.Add(spawnCom);
         }
 
     }
@@ -80,10 +86,15 @@ public class EnemySpawnerControler : MonoBehaviour
             var startPosition = EnemyTilemap.GetCellCenterWorld(pos.TilePositon);
             var enemy = Instantiate(enemyPrefab1, parent: this.gameObject.transform, rotation: this.gameObject.transform.rotation, position: startPosition);
 
-
-
             var sprite = enemy.GetComponent<SpriteRenderer>();
             sprite.sortingOrder = 22;
+
+            //TODO: add enemy starting targer and path from spawn            
+            // Enemy enemyInfo = enemy.GetComponent<Enemy>();           
+
+            var controls = enemy.GetComponent<KretanjePoPutanji>();
+            controls.tmap = EnemyTilemap;
+
 
         }
     }

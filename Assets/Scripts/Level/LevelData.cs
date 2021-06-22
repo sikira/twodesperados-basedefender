@@ -31,7 +31,7 @@ public class LevelData
     public int NumberOfEnemySpawner = 4;
     public bool CanWalDiagonaly = false;
     public Vector3Int basePosition;
-    public float ObstaclePercent = 0.50f;
+    public float ObstaclePercent = 0.30f;
 
 
     public int SizeX

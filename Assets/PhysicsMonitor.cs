@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PhysicsMonitor : MonoBehaviour
 {
-    Vector2Int endPosition { get; set; }
-    RectInt map { get; set; }
-    List<Vector2Int> nonWalkablePositions { get; set; }
+    public Vector2Int endPosition { get; set; }
+    public RectInt map { get; set; }
+    public List<Vector2Int> nonWalkablePositions { get; set; }
 
 
 

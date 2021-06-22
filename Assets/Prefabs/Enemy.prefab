@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 61932065500332852}
   - component: {fileID: 50374796864737756}
   - component: {fileID: 6779003361668991153}
-  - component: {fileID: 5659616972988355525}
+  - component: {fileID: 7624897661779637701}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa21b4742db7e64f9ad158f20bec318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5659616972988355525
+--- !u!114 &7624897661779637701
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,7 +151,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7434268934112711380}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 412839db9da744d448214b4b210204b1, type: 3}
+  m_Script: {fileID: 11500000, guid: c16988509006b2b4d8b63f2dc1a4dd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   smoothTime: 0.02
+  tileMap: {fileID: 0}
