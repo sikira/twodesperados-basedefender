@@ -84,7 +84,7 @@ public class EnemySpawnerControler : MonoBehaviour
         foreach (var pos in spawnersList)
         {
             var startPosition = EnemyTilemap.GetCellCenterWorld(pos.TilePositon);
-            var enemy = Instantiate(enemyPrefab1, parent: this.gameObject.transform, rotation: this.gameObject.transform.rotation, position: startPosition);
+            var enemy = GetEnemyInstance(enemyPrefab1, this.gameObject.transform, this.gameObject.transform.rotation, startPosition);
 
             var sprite = enemy.GetComponent<SpriteRenderer>();
             sprite.sortingOrder = 22;
@@ -98,6 +98,11 @@ public class EnemySpawnerControler : MonoBehaviour
             controls.CurrentTilePosition = (Vector2Int)pos.TilePositon;
             controls.tmap = EnemyTilemap;
         }
+    }
+
+    private Transform GetEnemyInstance(Transform prefab, Transform mparent, Quaternion mrotation, Vector3 mposition)
+    {
+        return Instantiate(prefab, parent: mparent, rotation: mrotation, position: mposition);
     }
 
     IEnumerator SpawnWave(SpawnWave wave)

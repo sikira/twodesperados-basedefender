@@ -9,7 +9,6 @@ public class HealtBar : MonoBehaviour
     public void SetPercent(int start, int max)
     {
         var percent = (float)start / (float)max;
-        Debug.Log("percent " + percent);
         if (percent < 0)
             percent = 0;
         if (percent > 1)

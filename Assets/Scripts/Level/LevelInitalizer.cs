@@ -19,11 +19,7 @@ public class LevelInitalizer
     public List<Vector3Int> freeSpaceOutsidePlayerBase = new List<Vector3Int>();
     public PhysicsMonitor pMonitor;
 
-    void Awake()
-    {
-        // levelData = new LevelData();
-        // InitalizeTiles();
-    }
+
     public void Init(LevelData data)
     {
         levelData = data;
@@ -57,7 +53,7 @@ public class LevelInitalizer
         InitalizeObstaclesAndDestObstables();
     }
 
-    private void ClearAll()
+    public void ClearAll()
     {
         //TODO:hardcoded
         LastSizeX = 100;
@@ -90,7 +86,8 @@ public class LevelInitalizer
 
         System.Random r = new System.Random();
 
-        int numOfObst = Mathf.FloorToInt(freeSpaceOutsidePlayerBase.Count * levelData.ObstaclePercent);
+        // int numOfObst = Mathf.FloorToInt(freeSpaceOutsidePlayerBase.Count * levelData.ObstaclePercent);
+        int numOfObst = levelData.ObstacleNumber;
 
         for (int i = 0; i < numOfObst; i++)
         {
@@ -238,7 +235,7 @@ public class LevelInitalizer
                     // creating outside wall
                     levelRef.ObstacleTileMap.SetTile(new Vector3Int(i, j, 0), levelRef.ObstacleSample1);
                     // pMonitor.obstacleListPosition.Add(new BaseObstacle(new Vector2Int(i, j)));
-                    pMonitor.nonWalkablePositions.Add(new Vector2Int(i,j));
+                    pMonitor.nonWalkablePositions.Add(new Vector2Int(i, j));
                 }
                 else
                 {

@@ -56,7 +56,7 @@ public interface IDebuggerPathfinding
 
 public class DebuggerGlobalSettings
 {
-    public static bool UseDebugger = false;
+    public static bool UseDebugger = true;
 }
 
 public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding

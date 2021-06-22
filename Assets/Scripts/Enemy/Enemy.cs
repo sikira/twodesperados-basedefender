@@ -126,6 +126,9 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
 
     public void HitMe(int power)
     {
+        if (debuging)
+            return;
+            
         Health -= power;
 
         healthBar?.SetPercent(Health, startHealth);

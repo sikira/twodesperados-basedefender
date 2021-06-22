@@ -54,8 +54,11 @@ namespace BaseDefender.Editor
                 if (GUILayout.Button("Create Random Level!"))
                 {
                     initalizer = new LevelInitalizer();
-
                     initalizer.Init(data);
+                }
+                if (GUILayout.Button("Clean Stage"))
+                {
+                    initalizer.ClearAll();
                 }
 
                 if (GUILayout.Button("Find Path A*"))

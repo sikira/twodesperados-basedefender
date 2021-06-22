@@ -31,9 +31,18 @@ public class LevelData
     public int NumberOfEnemySpawner = 4;
     public bool CanWalDiagonaly = false;
     public Vector3Int basePosition;
-    public float ObstaclePercent = 0.30f;
+    private int obstacleNumber = 15;
 
+    public int ObstacleNumber
+    {
+        get => obstacleNumber;
 
+        set
+        {
+            if (value >= 0)
+                obstacleNumber = value;
+        }
+    }
     public int SizeX
     {
         get => sizeX;
@@ -81,5 +90,6 @@ public class LevelData
             return _baseArea.GetValueOrDefault();
         }
     }
+
 
 }
