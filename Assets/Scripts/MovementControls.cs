@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,5 +28,12 @@ public class MovementControls : MonoBehaviour
         rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref velocity, smoothTime);
 
 
+    }
+
+    internal void Stop()
+    {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = 0f;
+        rb.Sleep();
     }
 }

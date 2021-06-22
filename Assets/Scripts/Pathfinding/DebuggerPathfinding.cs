@@ -56,7 +56,7 @@ public interface IDebuggerPathfinding
 
 public class DebuggerGlobalSettings
 {
-    public static bool UseDebugger = true;
+    public static bool UseDebugger = false;
 }
 
 public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
@@ -68,7 +68,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
 
     public void Start()
     {
-        Debug.Log("Debugger is start");
+        // Debug.Log("Debugger is start");
         var existingGameObject = GameObject.Find(nodeHolderName);
         dic = new Dictionary<Vector2Int, Transform>();
         foreach (Transform child in existingGameObject.transform)

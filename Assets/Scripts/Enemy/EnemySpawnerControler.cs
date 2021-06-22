@@ -44,7 +44,7 @@ public class EnemySpawnerControler : MonoBehaviour
         {
             if (spawnState != SpawnState.SPAWWING)
             {
-                Debug.Log("EnemySpawner:Pocni izbacivati");
+                // Debug.Log("EnemySpawner:Pocni izbacivati");
                 StartCoroutine(SpawnWave(new SpawnWave()));
 
             }

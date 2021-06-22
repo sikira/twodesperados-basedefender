@@ -4,8 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public class EnemySettings
+{
+    public int hittingPower = 5;
+    public float HitRate = 1.25f;
+    public float currentHitRate = 1f;
+
+}
+
 public class Enemy : MonoBehaviour, IFakeTriggerComponent
 {
+    public EnemySettings settings = new EnemySettings();
     public static int enemyIdCounter = 0;
     private string enemyId = "";
     public static int timeStopCounter = 0;
@@ -19,8 +28,12 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
     PhysicsMonitor physicsMonitor;
     int maxStep;
     public int ViewSoundTriggerId = 1;
-
+    public int AttackTriggerId = 2;
     private GameObject chasingTarget = null;
+
+
+
+
 
     void Start()
     {
@@ -31,7 +44,7 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
 
         physicsMonitor = GameObject.FindObjectOfType<PhysicsMonitor>();
         endPosition = physicsMonitor.endPosition;
-        currentTarget = endPosition;
+        nextCurrentTarget = endPosition;
 
         controls = this.gameObject.GetComponent<KretanjePoPutanji>();
 
@@ -42,15 +55,13 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
             pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
         }
 
-
-        OnPshycsMapChangeUpdate();
     }
 
     private void OnPshycsMapChangeUpdate()
     {
-        var castAsVector = physicsMonitor.nonWalkablePositions.Select(v => new Vector2Int(v.x, v.y)).ToList();
-        maxStep = castAsVector.Count;
-        pathfinderAlgo.SetUp(controls.CurrentTilePosition, currentTarget, physicsMonitor.map, castAsVector);
+        var castAsVector = physicsMonitor.nonWalkablePositions?.Select(v => new Vector2Int(v.x, v.y))?.ToList();
+        maxStep = castAsVector?.Count ?? 300;
+        pathfinderAlgo.SetUp(controls.CurrentTilePosition, currentTarget, physicsMonitor.map, castAsVector ?? new List<Vector2Int>());
     }
 
 
@@ -60,7 +71,25 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
         {
             ChasePlayer(obj);
         }
+        else if (AttackTriggerId == triggerId)
+        {
+            IHittableObject hitTarget = obj.GetComponent<IHittableObject>();
+            hitTarget?.HitMe(settings.hittingPower);
+        }
     }
+    public void ObjectStay(GameObject obj, int triggerId)
+    {
+        if (AttackTriggerId == triggerId)
+        {
+            IHittableObject hitTarget = obj.GetComponent<IHittableObject>();
+            if (settings.currentHitRate > settings.HitRate)
+            {
+                settings.currentHitRate = 0;
+                hitTarget?.HitMe(settings.hittingPower);
+            }
+        }
+    }
+
 
     public void ObjectExited(GameObject obj, int triggerId)
     {
@@ -68,33 +97,38 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
         {
             GoToBase();
         }
+        else if (AttackTriggerId == triggerId)
+        {
+
+        }
     }
 
     private void GoToBase()
     {
-        Debug.Log("go to base");
         chasingTarget = null;
+        controls.speed = controls.WALK_SPEED;
         nextCurrentTarget = endPosition;
     }
     private void ChasePlayer(GameObject gameObject)
     {
+        controls.speed = controls.RUN_SPEED;
         chasingTarget = gameObject;
     }
+    private Vector2Int GetClosesTile(GameObject chasingTarget)
+    {
+        //TODO: slow slow slow
+        var tMap = GameObject.FindObjectOfType<LevelRefHolder>()?.EnemyTileMap;
+        return (Vector2Int)tMap.WorldToCell(chasingTarget.transform.position);
 
-
-
-
+    }
     // Update is called once per frame
     void Update()
     {
+        settings.currentHitRate += Time.deltaTime;
+
         if (chasingTarget != null)
         {
-            controls.walking = false;
-            return;
-        }
-        else
-        {
-            controls.walking = true;
+            nextCurrentTarget = GetClosesTile(chasingTarget);
         }
 
         if (currentTarget != nextCurrentTarget)

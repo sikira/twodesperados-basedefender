@@ -2,14 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public interface IHittableObject
+{
+    int Health { get; }
+    void HitMe(int power);
+    void HealMe(int power);
+
+}
+
 public interface IFakeTriggerComponent
 {
     void ObjectEntered(GameObject obj, int triggerId);
     void ObjectExited(GameObject obj, int triggerId);
+    void ObjectStay(GameObject obj, int triggerId);
 }
 public class FakeTriggerComponent : MonoBehaviour
 {
-    public string ObjectTag = "Player";
+    public List<string> ObjectTag = new List<string> { "Player" };
     public int triggerId = 0;
     public IFakeTriggerComponent receiver;
     // public delegate void ObjectEntered(GameObject obj);
@@ -22,7 +32,7 @@ public class FakeTriggerComponent : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == ObjectTag)
+        if (ObjectTag.Contains(collider.gameObject.tag))
         {
             receiver?.ObjectExited(collider.gameObject, triggerId);
         }
@@ -30,9 +40,16 @@ public class FakeTriggerComponent : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == ObjectTag)
+        if (ObjectTag.Contains(collider.gameObject.tag))
         {
             receiver?.ObjectEntered(collider.gameObject, triggerId);
+        }
+    }
+    void OnTriggerStay2D(Collider2D collider)
+    {
+        if (ObjectTag.Contains(collider.gameObject.tag))
+        {
+            receiver?.ObjectStay(collider.gameObject, triggerId);
         }
     }
 

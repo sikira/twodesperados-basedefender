@@ -16,11 +16,14 @@ public class KretanjePoPutanji : MonoBehaviour
 
     public bool walking = false;
     public Tilemap tmap;
-    private float speed = 1.25f;
+    public float WALK_SPEED = 1.25f;
+    public float RUN_SPEED = 2f;
+    public float speed = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
+        speed = WALK_SPEED;
         // rb = this.GetComponent<Rigidbody2D>();
     }
 
