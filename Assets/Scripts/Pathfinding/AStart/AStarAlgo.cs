@@ -17,7 +17,7 @@ public class AStarAlgo : INodePathfinderAlgo
     BaseNode endNodeMark;
     private List<BaseNode> openList;
     private List<BaseNode> closedList;
-    private List<BaseNode> nonWalkablesList = Enumerable.Range(0, 50).Select(n => new BaseNode(new Vector2Int(n, 4))).ToList();
+    private List<BaseNode> nonWalkablesList = new List<BaseNode>();// Enumerable.Range(0, 50).Select(n => new BaseNode(new Vector2Int(n, 4))).ToList();
     private List<BaseNode> completeMap;
     IDebuggerPathfinding debuger;
     public bool canWalkDiagonaly { get; set; } = false;
@@ -26,6 +26,7 @@ public class AStarAlgo : INodePathfinderAlgo
         debuger = debuggerPathfinding;
         DebugLayerNumber = debugerLayer == -1 ? debuger.GetId() : debugerLayer;
     }
+
     public void SetUp(Vector2Int startPosition, Vector2Int endPosition, RectInt map, List<Vector2Int> nonWalkablePositions)
     {
 

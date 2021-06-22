@@ -9,7 +9,7 @@ public class LevelRefHolder : MonoBehaviour
     public MainPlayer player;
     public PlayerBase playerBase;
     public Camera mainCamera;
-    public EnemySpawner enemySpawner;
+    public EnemySpawnerControler enemySpawner;
 
     public Tilemap FloorTileMap;
     public Tilemap ObstacleTileMap;

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DebuggerColorPaletes
 {
-    private static List<Color> colors = new List<Color>(){
+    internal static List<Color> colors = new List<Color>(){
             Color.cyan , Color.blue , Color.green , Color.red , Color.yellow , Color.white , Color.black , Color.grey , Color.magenta , Color.yellow
     };
 
@@ -122,9 +122,10 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
             mark.DeactivateMark(layerNumber);
     }
 
+    private static int _id = -1;
     public int GetId()
     {
-        return 0;
+        return (_id++) / DebuggerColorPaletes.colors.Count;
     }
 
     // internal void MarkNeigbours(List<BaseNode> neighbourList, Color color)

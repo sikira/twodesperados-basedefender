@@ -30,6 +30,9 @@ public class LevelInitalizer
     {
         levelData = data;
         levelRef = GameObject.FindObjectOfType<LevelRefHolder>();
+        if (levelRef.enemySpawner == null)
+            levelRef.enemySpawner = GameObject.FindObjectOfType<EnemySpawnerControler>();
+
         InitLevel();
     }
     private void InitLevel()
@@ -91,18 +94,18 @@ public class LevelInitalizer
 
             var newPhicyMap = obstacleListPosition.Select(o => (Vector2Int)o.Position).ToList();
             newPhicyMap.Add((Vector2Int)pos);
-            Debug.Log("Preracunaj");
+            // Debug.Log("Preracunaj");
             if (CanAllEnemiesWalkToBase(newPhicyMap))
             {
-                Debug.Log("Ubaci");
+                // Debug.Log("Ubaci");
                 // add valid opstacle
                 levelRef.ObstacleTileMap.SetTile(pos, levelRef.ObstacleSample1);
                 obstacleListPosition.Add(new BaseObstacle((Vector2Int)pos));
             }
-            else
-            {
-                Debug.Log("Izbaci");
-            }
+            // else
+            // {
+            //     // Debug.Log("Izbaci");
+            // }
 
         }
 
@@ -150,11 +153,17 @@ public class LevelInitalizer
                 catch { }
             }
         }
-        foreach (var pos in spawnListPositions)
-            levelRef.EnemyTileMap.SetTile(pos, levelRef.SpawnerTileMap);
+        // foreach (var pos in spawnListPositions)
+        // {
+        //     // levelRef.EnemyTileMap.SetTile(pos, levelRef.SpawnerTileMap);
 
-        // levelRef.enemySpawner.SetSpawnerPositions(spawnListPositions.ToList());
-        GameObject.FindObjectOfType<EnemySpawner>()?.SetSpawnerPositions(spawnListPositions.ToList());
+        // }
+
+
+        if (levelRef.enemySpawner != null)
+            levelRef.enemySpawner.SetSpawnerPositions(spawnListPositions.ToList());
+        else
+            GameObject.FindObjectOfType<EnemySpawnerControler>()?.SetSpawnerPositions(spawnListPositions.ToList());
 
         // **** Solution 2  ****//
         // while (spawnListPosition.Count() > levelData.NumberOfEnemySpawner)

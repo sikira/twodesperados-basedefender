@@ -8,7 +8,7 @@ public interface INodePathfinderAlgo
     void CalculateAll();
     List<BaseNode> FindStep();
     void SetUp(Vector2Int startPosition, Vector2Int endPosition, RectInt map, List<Vector2Int> nonWalkablePositions);
-    void SetUpDebugger(IDebuggerPathfinding debuggerPathfinding, int debugerLayer);
+    void SetUpDebugger(IDebuggerPathfinding debuggerPathfinding, int debugerLayer = -1);
     Vector2Int[] GetPath();
 }
 
