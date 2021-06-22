@@ -88,4 +88,9 @@ public class KretanjePoPutanji : MonoBehaviour
         currentPath.RemoveAt(0);
         walking = true;
     }
+
+    internal void Stop()
+    {
+        walking = false;
+    }
 }

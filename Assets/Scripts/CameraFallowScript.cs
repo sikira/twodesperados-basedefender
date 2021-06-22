@@ -9,7 +9,7 @@ public class CameraFallowScript : MonoBehaviour
     // Start is called before the first frame update
 
     [SerializeField] private float smoothTime = 1f;
-    [SerializeField] private float maxDistance = 5f;
+    [SerializeField] private float maxDistance = 3f;//5f;
     private Vector3 velocity = Vector3.zero;
 
 

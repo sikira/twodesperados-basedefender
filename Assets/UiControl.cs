@@ -23,7 +23,7 @@ public class UiControl : MonoBehaviour
 
     }
 
-    internal void PlayerKilled()
+    internal void GameOver()
     {
         Time.timeScale = .05f;
         fail.enabled = true;

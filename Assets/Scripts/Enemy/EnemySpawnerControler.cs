@@ -90,7 +90,9 @@ public class EnemySpawnerControler : MonoBehaviour
             sprite.sortingOrder = 22;
 
             //TODO: add enemy starting targer and path from spawn            
-            // Enemy enemyInfo = enemy.GetComponent<Enemy>();           
+            // Enemy enemyInfo = enemy.GetComponent<Enemy>();   
+
+            // enemy.GetComponent<Enemy>().ReStartMe(new AttackSettings(), 100);
 
             var controls = enemy.GetComponent<KretanjePoPutanji>();
             controls.CurrentTilePosition = (Vector2Int)pos.TilePositon;

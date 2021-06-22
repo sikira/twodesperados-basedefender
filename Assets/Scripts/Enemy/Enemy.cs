@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
-public class EnemySettings
+public class AttackSettings
 {
     public int hittingPower = 5;
     public float HitRate = 1.25f;
@@ -12,9 +13,9 @@ public class EnemySettings
 
 }
 
-public class Enemy : MonoBehaviour, IFakeTriggerComponent
+public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
 {
-    public EnemySettings settings = new EnemySettings();
+    public AttackSettings settings = new AttackSettings();
     public static int enemyIdCounter = 0;
     private string enemyId = "";
     public static int timeStopCounter = 0;
@@ -30,13 +31,22 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
     public int ViewSoundTriggerId = 1;
     public int AttackTriggerId = 2;
     private GameObject chasingTarget = null;
+    private int startHealth = 100;
+    private int _health = 100;
+    public bool alive = true;
 
-
-
-
+    public int Health { get => _health; private set => _health = value; }
+    private Tilemap tMap;
+    private TileBase bloodTile;
+    private HealtBar healthBar;
 
     void Start()
     {
+        tMap = GameObject.FindObjectOfType<LevelRefHolder>()?.EnemyTileMap;
+        bloodTile = GameObject.FindObjectOfType<LevelRefHolder>()?.BloodTileSampe1;
+
+        healthBar = this.gameObject.GetComponentInChildren<HealtBar>();
+
         enemyIdCounter++;
         enemyId = enemyIdCounter.ToString();
 
@@ -55,6 +65,17 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
             pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
         }
 
+    }
+
+    public void ReStartMe(AttackSettings settings, int enemyHealth)
+    {
+        this.settings = settings;
+        _health = enemyHealth;
+        startHealth = enemyHealth;
+        GetComponent<BoxCollider2D>().enabled = true;
+        alive = true;
+        controls.walking = true;
+        this.gameObject.SetActive(true);
     }
 
     private void OnPshycsMapChangeUpdate()
@@ -103,6 +124,39 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
         }
     }
 
+    public void HitMe(int power)
+    {
+        Health -= power;
+
+        healthBar?.SetPercent(Health, startHealth);
+
+        if (Health <= 0)
+        {
+            Killed();
+        }
+
+        // Debug.Log($"Auuuuch {Health} -  {alive}");
+    }
+
+    private void Killed()
+    {
+        alive = false;
+        controls.Stop();
+
+        GetComponent<BoxCollider2D>().enabled = false;
+        this.gameObject.SetActive(false);
+
+        tMap?.SetTile((Vector3Int)controls.CurrentTilePosition, bloodTile);
+    }
+
+    public void HealMe(int power)
+    {
+        Health += power;
+        if (Health > 100)
+            Health = 100;
+    }
+
+
     private void GoToBase()
     {
         chasingTarget = null;
@@ -116,14 +170,14 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
     }
     private Vector2Int GetClosesTile(GameObject chasingTarget)
     {
-        //TODO: slow slow slow
-        var tMap = GameObject.FindObjectOfType<LevelRefHolder>()?.EnemyTileMap;
         return (Vector2Int)tMap.WorldToCell(chasingTarget.transform.position);
-
     }
     // Update is called once per frame
     void Update()
     {
+        if (!alive)
+            return;
+
         settings.currentHitRate += Time.deltaTime;
 
         if (chasingTarget != null)
@@ -146,37 +200,34 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent
                 controls.UpdatePath(currentPath);
             }
         }
+    }
+    IEnumerator ShowPathDebuging()
+    {
+        debuging = true;
+        timeStopCounter++;
+        Time.timeScale = 0;
 
+        float corutineSpeed = .04f;
 
-
-        IEnumerator ShowPathDebuging()
+        for (int i = 0; i < maxStep; i++)
         {
-            debuging = true;
-            timeStopCounter++;
-            Time.timeScale = 0;
-
-            float corutineSpeed = .04f;
-
-            for (int i = 0; i < maxStep; i++)
+            var nextCalulatePath = pathfinderAlgo.FindStep();
+            if (nextCalulatePath != null)
             {
-                var nextCalulatePath = pathfinderAlgo.FindStep();
-                if (nextCalulatePath != null)
-                {
-                    currentPath = nextCalulatePath.Select(n => n.Position).ToList();
-                    corutineSpeed = 1.5f;
-                    i = maxStep;
-                }
-                yield return new WaitForSecondsRealtime(corutineSpeed);
+                currentPath = nextCalulatePath?.Select(n => n.Position)?.ToList();
+                corutineSpeed = 1.5f;
+                i = maxStep;
             }
-            controls.UpdatePath(currentPath);
-            pathfinderAlgo.CleanDebugger();
-            debuging = false;
-            timeStopCounter--;
-            if (timeStopCounter == 0)
-                Time.timeScale = 1;
-
-            yield break;
+            yield return new WaitForSecondsRealtime(corutineSpeed);
         }
+        controls.UpdatePath(currentPath);
+        pathfinderAlgo.CleanDebugger();
+        debuging = false;
+        timeStopCounter--;
+        if (timeStopCounter == 0)
+            Time.timeScale = 1;
+
+        yield break;
     }
 
 
