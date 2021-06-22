@@ -73,6 +73,8 @@ public class LevelInitalizer
         }
         posibleSpawnListPositions = new List<Vector3Int>();
 
+        pMonitor.nonWalkablePositions = new List<Vector2Int>();
+
         var allSpawners = GameObject.FindObjectsOfType<Spawner>();
         foreach (var spaw in allSpawners)
             GameObject.DestroyImmediate(spaw.gameObject);
@@ -96,7 +98,8 @@ public class LevelInitalizer
             var pos = freeSpaceOutsidePlayerBase[nextPos];
             freeSpaceOutsidePlayerBase.RemoveAt(nextPos);
 
-            var newPhicyMap = pMonitor.obstacleListPosition.Select(o => (Vector2Int)o.Position).ToList();
+            // var newPhicyMap = pMonitor.obstacleListPosition.Select(o => (Vector2Int)o.Position).ToList();
+            var newPhicyMap = pMonitor.nonWalkablePositions;
             newPhicyMap.Add((Vector2Int)pos);
             // Debug.Log("Preracunaj");
             if (CanAllEnemiesWalkToBase(newPhicyMap))
@@ -104,7 +107,8 @@ public class LevelInitalizer
                 // Debug.Log("Ubaci");
                 // add valid opstacle
                 levelRef.ObstacleTileMap.SetTile(pos, levelRef.ObstacleSample1);
-                pMonitor.obstacleListPosition.Add(new BaseObstacle((Vector2Int)pos));
+                // pMonitor.obstacleListPosition.Add(new BaseObstacle((Vector2Int)pos));
+                pMonitor.nonWalkablePositions.Add((Vector2Int)pos);
             }
             // else
             // {
@@ -233,7 +237,8 @@ public class LevelInitalizer
 
                     // creating outside wall
                     levelRef.ObstacleTileMap.SetTile(new Vector3Int(i, j, 0), levelRef.ObstacleSample1);
-                    pMonitor.obstacleListPosition.Add(new BaseObstacle(new Vector2Int(i, j)));
+                    // pMonitor.obstacleListPosition.Add(new BaseObstacle(new Vector2Int(i, j)));
+                    pMonitor.nonWalkablePositions.Add(new Vector2Int(i,j));
                 }
                 else
                 {

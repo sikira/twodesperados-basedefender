@@ -62,7 +62,8 @@ namespace BaseDefender.Editor
                 {
                     var debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
 
-                    var nonWalkables = initalizer.pMonitor.obstacleListPosition.Select(o => o.Position).ToList();
+                    // var nonWalkables = initalizer.pMonitor.obstacleListPosition.Select(o => o.Position).ToList();
+                    var nonWalkables = initalizer.pMonitor.nonWalkablePositions;
                     aStar = PathfindingAlgo.GetAlgo();
                     aStar.SetUp(new Vector2Int(1, 1), new Vector2Int(8, 8), data.MapArea, nonWalkables);
                     aStar.SetUpDebugger(debuger, 3);

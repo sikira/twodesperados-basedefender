@@ -9,13 +9,14 @@ public class KretanjePoPutanji : MonoBehaviour
     public Vector2Int CurrentTilePosition;
     private Rigidbody2D rb;
     private Vector3 velocity = Vector3.zero;
-    [Range(0, .3f)] [SerializeField] private float smoothTime = .02f;//.05f;
+    // private float smoothTime = 1.02f;//.05f;
 
     List<Vector2Int> currentPath = new List<Vector2Int>();
     Vector3 nextPosition = new Vector3();
 
     public bool walking = false;
     public Tilemap tmap;
+    private float speed = 1.25f;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +27,6 @@ public class KretanjePoPutanji : MonoBehaviour
     void Update()
     {
         UpdateMove();
-
     }
 
     private void UpdateMove()
@@ -36,7 +36,7 @@ public class KretanjePoPutanji : MonoBehaviour
 
         var distance = Vector3.Distance(nextPosition, rb.position);
 
-        if (distance < .5f)
+        if (distance < .05f)
         {
             if (currentPath.Count > 0)
             {
@@ -48,11 +48,8 @@ public class KretanjePoPutanji : MonoBehaviour
             }
         }
 
-        // var distance = Vector3.Distance(nextPosition, rb.position);
-        // Vector3 targetVelocity = new Vector2(moveX * 10f, moveY * 10f);
-
-        rb.velocity = Vector3.SmoothDamp(rb.velocity, nextPosition, ref velocity, smoothTime);
-
+        // Use rigid body for moving object
+        this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, nextPosition, speed * Time.deltaTime);
     }
 
     // Update is called once per frame
@@ -68,8 +65,11 @@ public class KretanjePoPutanji : MonoBehaviour
 
     internal void UpdatePath(List<Vector2Int> path)
     {
+        // Debug.Log("Update path - " + DateTime.Now.ToString());
+
         if (path != null && path.Count > 0)
         {
+            // Debug.Log($"Update path unutar petlje {path.Count} - " + DateTime.Now.ToString());
             currentPath = path;
             getNextWayPoint();
         }
@@ -77,8 +77,11 @@ public class KretanjePoPutanji : MonoBehaviour
 
     private void getNextWayPoint()
     {
+        // Debug.Log("get next way point");
+
         CurrentTilePosition = currentPath[0];
-        nextPosition = tmap.CellToWorld((Vector3Int)CurrentTilePosition);
+        // nextPosition = tmap.CellToWorld((Vector3Int)CurrentTilePosition);
+        nextPosition = tmap.GetCellCenterWorld((Vector3Int)CurrentTilePosition);
         currentPath.RemoveAt(0);
         walking = true;
     }

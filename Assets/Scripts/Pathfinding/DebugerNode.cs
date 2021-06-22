@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class DebugerNode : MonoBehaviour
 {
+    public Vector2Int tilePosition;
     public List<SpriteRenderer> marks = new List<SpriteRenderer>();
     public List<bool> marksBool;
 

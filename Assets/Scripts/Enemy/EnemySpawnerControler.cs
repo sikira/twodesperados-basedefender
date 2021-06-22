@@ -45,7 +45,6 @@ public class EnemySpawnerControler : MonoBehaviour
             if (spawnState != SpawnState.SPAWWING)
             {
                 Debug.Log("EnemySpawner:Pocni izbacivati");
-
                 StartCoroutine(SpawnWave(new SpawnWave()));
 
             }
@@ -63,8 +62,12 @@ public class EnemySpawnerControler : MonoBehaviour
 
     public void SetSpawnerPositions(List<Vector3Int> positions)
     {
+        spawnersList = new List<Spawner>();
+
         foreach (var positons in positions)
         {
+            // Debug.Log($"Spawner positions:{positons}");
+
             var startPosition = EnemyTilemap.GetCellCenterWorld(positons);
             var spawn = Instantiate(spawnPrefab, parent: this.gameObject.transform, rotation: this.gameObject.transform.rotation, position: startPosition);
 
@@ -77,12 +80,9 @@ public class EnemySpawnerControler : MonoBehaviour
 
     void SpawnEnemy()
     {
-        Debug.Log($"EnemySpawner:SpawnEnemy {System.DateTime.Now}");
+        // Debug.Log($"EnemySpawner:SpawnEnemy {spawnersList.Count} - {System.DateTime.Now}");
         foreach (var pos in spawnersList)
         {
-            Debug.Log($"EnemySpawner:Unutar petlje {pos}");
-
-
             var startPosition = EnemyTilemap.GetCellCenterWorld(pos.TilePositon);
             var enemy = Instantiate(enemyPrefab1, parent: this.gameObject.transform, rotation: this.gameObject.transform.rotation, position: startPosition);
 
@@ -95,7 +95,6 @@ public class EnemySpawnerControler : MonoBehaviour
             var controls = enemy.GetComponent<KretanjePoPutanji>();
             controls.CurrentTilePosition = (Vector2Int)pos.TilePositon;
             controls.tmap = EnemyTilemap;
-
         }
     }
 
@@ -120,7 +119,7 @@ public class EnemySpawnerControler : MonoBehaviour
 
 public class SpawnWave
 {
-    public int count = 3;
-    public float delay = 4f;
+    public int count = 1;
+    public float delay = 5f;
 
 }

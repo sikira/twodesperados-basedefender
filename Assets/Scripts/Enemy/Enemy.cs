@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public static int enemyIdCounter = 0;
+    private string enemyId = "";
+    public static int timeStopCounter = 0;
+    private bool debuging = false;
     private KretanjePoPutanji controls;
     Vector2Int endPosition = new Vector2Int();
     Vector2Int currentTarget = new Vector2Int(-1, -1);
@@ -16,24 +20,26 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+        enemyIdCounter++;
+        enemyId = enemyIdCounter.ToString();
+
         pathfinderAlgo = PathfindingAlgo.GetAlgo();
 
         controls = this.gameObject.GetComponent<KretanjePoPutanji>();
 
         var debuger = GameObject.FindObjectOfType<DebuggerPathfinding>();
-        // pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
+        pathfinderAlgo.SetUpDebugger(debuger, debuger.GetId());
 
-        OnPshycsUpdate();
+
+        OnPshycsMapChangeUpdate();
     }
 
-    private void OnPshycsUpdate()
+    private void OnPshycsMapChangeUpdate()
     {
         physicsMonitor = GameObject.FindObjectOfType<PhysicsMonitor>();
         endPosition = physicsMonitor.endPosition;
-
-
-        pathfinderAlgo.SetUp(controls.CurrentTilePosition, physicsMonitor.endPosition, physicsMonitor.map, physicsMonitor.nonWalkablePositions);
-
+        var castAsVector = physicsMonitor.nonWalkablePositions.Select(v => new Vector2Int(v.x, v.y)).ToList();
+        pathfinderAlgo.SetUp(controls.CurrentTilePosition, physicsMonitor.endPosition, physicsMonitor.map, castAsVector);
     }
 
 
@@ -42,16 +48,53 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // TODO: optimizuj provjeru da se ne desava stalno i uvijek :D
+
         if (currentTarget != nextCurrentTarget)
         {
             // find new path
             currentTarget = nextCurrentTarget;
-            currentPath = pathfinderAlgo.GetPath().ToList();
-            controls.UpdatePath(currentPath);
 
+            StartCoroutine(ShowPathDebuging());
+            // currentPath = pathfinderAlgo.GetPath().ToList();
+
+            controls.UpdatePath(currentPath);
         }
 
 
+
+        IEnumerator ShowPathDebuging()
+        {
+            debuging = true;
+            timeStopCounter++;
+            Time.timeScale = 0;
+
+            Debug.Log($"{enemyId}-Usao u showDebuging: " + DateTime.Now);
+
+            //TODO: dodati ukupan broj kocikica;
+            var maxStep = 500;
+            for (int i = 0; i < maxStep; i++)
+            {
+
+                // Debug.Log($"{enemyId}- MAKE STEP " + DateTime.Now);
+                var nextCalulatePath = pathfinderAlgo.FindStep();
+                if (nextCalulatePath != null)
+                {
+                    Debug.Log($"{enemyId}- FIND PATH {nextCalulatePath.Count} - " + DateTime.Now);
+
+                    currentPath = nextCalulatePath.Select(n => n.Position).ToList();
+                    i = maxStep;
+                }
+
+                yield return new WaitForSecondsRealtime(.5f);
+            }
+
+            Debug.Log($"{enemyId}-Izasao u showDebuging: " + DateTime.Now);
+            debuging = false;
+            timeStopCounter--;
+            if (timeStopCounter == 0)
+                Time.timeScale = 1;
+
+            yield break;
+        }
     }
 }

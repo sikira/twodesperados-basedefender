@@ -4,9 +4,9 @@ using UnityEngine;
 
 
 // public class BaseObstacle : MonoBehaviour
-public class BaseObstacle
+public class BaseObstacle : MonoBehaviour
 {
-    
+
     public Vector2Int Position;
 
     public BaseObstacle(Vector2Int position)

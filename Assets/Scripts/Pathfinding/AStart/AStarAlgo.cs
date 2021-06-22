@@ -74,6 +74,11 @@ public class AStarAlgo : INodePathfinderAlgo
 
     public List<BaseNode> FindStep()
     {
+        Debug.Log("AStart: FindStep: " + DateTime.Now);
+        if (debuger == null)
+            Debug.Log("no debugger");
+
+
         if (openList.Count == 0)
         {
             Debug.Log("no open list");

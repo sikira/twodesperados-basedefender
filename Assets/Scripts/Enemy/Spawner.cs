@@ -21,7 +21,7 @@ public class Spawner : MonoBehaviour
         pathfinderAlgo.SetUp((Vector2Int)TilePositon, pshycs2.endPosition, pshycs2.map, pshycs2.nonWalkablePositions);
 
         //TODO: slow down process and show it in debuger
-        pathToBase = pathfinderAlgo.GetPath().ToList();
+        // pathToBase = pathfinderAlgo.GetPath()?.ToList();
 
     }
 
