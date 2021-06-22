@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -55,9 +56,23 @@ public interface IDebuggerPathfinding
 
 public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
 {
+    private string nodeHolderName = "NodeHolder";
     public Transform NodePrefab;
-    private Dictionary<Vector2Int, Transform> dic = new Dictionary<Vector2Int, Transform>();
+    [SerializeField] public Dictionary<Vector2Int, Transform> dic = new Dictionary<Vector2Int, Transform>();
     private GameObject nodeHolder;
+
+    public void Start()
+    {
+        Debug.Log("Debugger is start");
+        var existingGameObject = GameObject.Find(nodeHolderName);
+        dic = new Dictionary<Vector2Int, Transform>();
+        foreach (Transform child in existingGameObject.transform)
+        {
+            var node = child.GetComponent<DebugerNode>();
+            dic.Add(node.tilePosition, child);
+        }
+    }
+
     public void InitalizeMesh(Vector2Int[] mesh, Vector3[] worldPosition)
     {
         InitalizeHolders();
@@ -66,6 +81,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
         {
             var node = Instantiate(NodePrefab, worldPosition[i] + new Vector3(0, 0, -0.2f), nodeHolder.transform.rotation, nodeHolder.transform);
             node.gameObject.SetActive(false);
+            node.GetComponent<DebugerNode>().tilePosition = mesh[i];
             dic.Add(mesh[i], node);
         }
     }
@@ -73,7 +89,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
     private void InitalizeHolders()
     {
         dic = new Dictionary<Vector2Int, Transform>();
-        var nodeHolderName = "NodeHolder";
+
         var existingGameObject = GameObject.Find(nodeHolderName);
         if (existingGameObject != null)
             GameObject.DestroyImmediate(existingGameObject.gameObject);
@@ -89,6 +105,7 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
     }
     public void DebugSearch(int layerNumber, BaseNode currentNode, List<BaseNode> openList, List<BaseNode> closedList, List<BaseNode> neighbourList)
     {
+        Debug.Log($"Debug Search {currentNode} - {openList.Count} - {closedList.Count} - {neighbourList.Count}");
         foreach (var node in neighbourList)
             MarkCurrentNode(node, layerNumber, GetPalet(layerNumber).NeighboursColor);
 
@@ -111,8 +128,17 @@ public class DebuggerPathfinding : MonoBehaviour, IDebuggerPathfinding
 
     public void MarkCurrentNode(BaseNode node, int layerNumber, Color color)
     {
-        if (node != null)
-            dic[node.Position]?.GetComponent<DebugerNode>()?.SetNode(layerNumber, color);
+        try
+        {
+            Debug.Log($"MarkNode: {node} - {node?.Position} ");
+            if (node != null)
+                dic[node.Position]?.GetComponent<DebugerNode>()?.SetNode(layerNumber, color);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
+
     }
 
     public void Clear(int layerNumber)
