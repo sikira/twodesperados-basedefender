@@ -27,10 +27,17 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
 
     private int fingerId = -1;
     private Vector2 startPosition;
+    private SpriteRenderer sr;
+    public Animator anim;
+
+    bool attacking = false;
+    bool walking = false;
 
     void Start()
     {
         controls = this.GetComponent<MovementControls>();
+        // sr = this.GetComponent<SpriteRenderer>();
+
     }
 
     public void ControlerMoveStarted()
@@ -44,6 +51,14 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
         horizontalMove = Input.GetAxis("Horizontal") * speed;
         verticalMove = Input.GetAxis("Vertical") * speed;
         settings.currentHitRate += Time.deltaTime;
+
+        if (attacking && settings.currentHitRate > 0.05f)
+        {
+            attacking = false;
+            anim.SetBool("attack", false);
+        }
+
+
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -93,6 +108,22 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
         {
             fingerId = -1;
         }
+
+        if (horizontalMove < 0)
+            this.gameObject.transform.localScale = new Vector3(-1, 1, 1);
+        else if (horizontalMove > 1)
+            this.gameObject.transform.localScale = new Vector3(1, 1, 1);
+
+        if (!attacking && !walking && horizontalMove != 0 && verticalMove != 0)
+        {
+            walking = true;
+            anim.SetBool("walking", true);
+        }
+        else if (walking)
+        {
+            walking = false;
+            anim.SetBool("walking", false);
+        }
     }
 
 
@@ -140,6 +171,9 @@ public class MainPlayer : MonoBehaviour, IHittableObject, IFakeTriggerComponent
         {
             settings.currentHitRate = 0;
             attackTarget?.HitMe(settings.hittingPower);
+
+            attacking = true;
+            anim.SetBool("attack", true);
         }
     }
     public void ObjectEntered(GameObject obj, int triggerId)
