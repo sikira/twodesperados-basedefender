@@ -59,4 +59,10 @@ public class StartMenu : MonoBehaviour
         Application.Quit();
     }
 
+    public void ResetLevelValue()
+    {
+        mainSettings.currentLevel = "1";
+        level.text = "Level 1"; 
+    }
+
 }

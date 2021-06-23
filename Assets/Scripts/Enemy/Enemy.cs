@@ -52,6 +52,7 @@ public class Enemy : MonoBehaviour, IFakeTriggerComponent, IHittableObject
         bloodTile = GameObject.FindObjectOfType<LevelRefHolder>()?.BloodTileSampe1;
 
         healthBar = this.gameObject.GetComponentInChildren<HealtBar>();
+        healthBar?.SetPercent(1, 1);
 
         enemyIdCounter++;
         enemyId = enemyIdCounter.ToString();
