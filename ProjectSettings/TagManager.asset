@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlayerBase
   - Enemy
+  - DesObstacle
   layers:
   - Default
   - TransparentFX
